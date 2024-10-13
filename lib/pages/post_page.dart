@@ -5,6 +5,10 @@ class PostPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('Post Page'));
+    return Center(
+        child: Text(
+      'Post Page',
+      style: TextStyle(color: Colors.white),
+    ));
   }
 }

@@ -5,6 +5,10 @@ class FavotirePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('Favorite Page'));
+    return Center(
+        child: Text(
+      'Favorite Page',
+      style: TextStyle(color: Colors.white),
+    ));
   }
 }
