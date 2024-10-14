@@ -15,7 +15,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return ListView.builder(
         controller: widget.scrollController,
-        itemCount: 1,
+        itemCount: 10,
         itemBuilder: (context, index) {
           RecordInfo records = RecordInfo(
             id: 1,

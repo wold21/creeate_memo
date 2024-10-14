@@ -17,7 +17,7 @@ class _ScaffoldPageState extends State<ScaffoldPage> {
   late final List _pages;
   int _pageIndex = 0;
   bool _isBottomNavVisible = true;
-  double _bottomNavPosition = 0;
+  double _bottomNavPosition = 10;
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -37,7 +37,7 @@ class _ScaffoldPageState extends State<ScaffoldPage> {
         // 위로 스크롤 시
         setState(() {
           _isBottomNavVisible = true;
-          _bottomNavPosition = 20;
+          _bottomNavPosition = 10;
         });
       }
     });
