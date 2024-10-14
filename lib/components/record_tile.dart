@@ -12,11 +12,11 @@ class RecordTile extends StatelessWidget {
         border: Border(top: BorderSide(color: Color(0xFF4D4D4D), width: 1)),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10.0),
+        padding: const EdgeInsets.symmetric(vertical: 15.0),
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -25,7 +25,7 @@ class RecordTile extends StatelessWidget {
                     records.title,
                     style: TextStyle(
                         color: Color(0xffF0EFEB),
-                        fontSize: 20,
+                        fontSize: 15,
                         fontWeight: FontWeight.bold),
                   ),
                   Row(
@@ -51,8 +51,7 @@ class RecordTile extends StatelessWidget {
               ),
             ),
             Padding(
-              padding:
-                  const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0),
+              padding: const EdgeInsets.only(top: 5.0, left: 20.0, right: 20.0),
               child: Row(
                 children: [
                   Expanded(
@@ -69,21 +68,24 @@ class RecordTile extends StatelessWidget {
               ),
             ),
             Padding(
-              padding:
-                  const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0),
+              padding: const EdgeInsets.only(top: 10.0, left: 20.0),
               child: Row(
-                children: const [
+                children: [
                   Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                    Icon(Icons.star_rate_rounded,
-                        size: 28, color: Color(0xffF0EFEB)),
+                    Icon(
+                        records.isFavorite
+                            ? Icons.star_outlined
+                            : Icons.star_outline_outlined,
+                        size: 22,
+                        color: Color(0xffF0EFEB)),
                   ]),
                   SizedBox(width: 10),
                   Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
                     Icon(Icons.insert_comment_outlined,
-                        color: Color(0xffF0EFEB)),
+                        color: Color(0xffF0EFEB), size: 22),
                     SizedBox(width: 5),
                     Text(
-                      '5',
+                      records.replyCount.toString(),
                       style: TextStyle(color: Color(0xffF0EFEB)),
                     )
                   ])

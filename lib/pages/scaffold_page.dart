@@ -16,7 +16,8 @@ class ScaffoldPage extends StatefulWidget {
 class _ScaffoldPageState extends State<ScaffoldPage> {
   late final List _pages;
   int _pageIndex = 0;
-  bool _isBottomNavVisible = true;
+  final TextEditingController _controller = TextEditingController();
+
   double _bottomNavPosition = 10;
   final ScrollController _scrollController = ScrollController();
 
@@ -29,14 +30,12 @@ class _ScaffoldPageState extends State<ScaffoldPage> {
       if (_scrollController.position.userScrollDirection ==
           ScrollDirection.reverse) {
         setState(() {
-          _isBottomNavVisible = false;
           _bottomNavPosition = 100;
         });
       } else if (_scrollController.position.userScrollDirection ==
           ScrollDirection.forward) {
         // 위로 스크롤 시
         setState(() {
-          _isBottomNavVisible = true;
           _bottomNavPosition = 10;
         });
       }
@@ -56,9 +55,44 @@ class _ScaffoldPageState extends State<ScaffoldPage> {
   }
 
   void _navigateBottomBar(int index) {
+    if (index == 1) return;
     setState(() {
       _pageIndex = index;
     });
+  }
+
+  void _onItemTapped(int index) {
+    if (index != 1) return;
+    _showInputSheet();
+  }
+
+  void _showInputSheet() {
+    showModalBottomSheet(
+      context: context,
+      isDismissible: true,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min, // BottomSheet의 최소 크기 설정
+            children: [
+              TextField(
+                controller: _controller,
+                decoration: InputDecoration(
+                  hintText: '메모를 입력하세요',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () {},
+                child: Text('추가하기'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -106,6 +140,7 @@ class _ScaffoldPageState extends State<ScaffoldPage> {
                     setState(() {
                       _pageIndex = index;
                     });
+                    _onItemTapped(index);
                   },
                   showSelectedLabels: false,
                   showUnselectedLabels: false,
@@ -120,11 +155,12 @@ class _ScaffoldPageState extends State<ScaffoldPage> {
                             Icon(Icons.home_filled, color: Color(0xffF0EFEB)),
                         label: 'Home'),
                     BottomNavigationBarItem(
-                        icon: Icon(Icons.add_box_outlined,
-                            color: Color.fromARGB(255, 72, 72, 72)),
-                        activeIcon: Icon(Icons.add_box_outlined,
-                            color: Color(0xffF0EFEB)),
-                        label: 'Post'),
+                      icon: Icon(Icons.add_box_outlined,
+                          color: Color.fromARGB(255, 72, 72, 72)),
+                      activeIcon: Icon(Icons.add_box_outlined,
+                          color: Color(0xffF0EFEB)),
+                      label: 'Post',
+                    ),
                     BottomNavigationBarItem(
                         icon: Icon(Icons.favorite_border_rounded,
                             color: Color.fromARGB(255, 72, 72, 72)),

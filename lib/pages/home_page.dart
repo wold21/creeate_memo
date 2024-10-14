@@ -13,18 +13,108 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        controller: widget.scrollController,
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          RecordInfo records = RecordInfo(
-            id: 1,
-            title: 'First Title',
-            description:
-                'Why do we use it?It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using Content here, content here, making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for lorem ipsum will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).Where does it come from?Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.Where can I get some?There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which dont look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isnt anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.5paragraphswordsbyteslistsStart with Loremipsum dolor sit amet...',
-            createAt: '2021-10-10',
-          );
-          return RecordTile(records: records);
-        });
+    final List<RecordInfo> records = [
+      RecordInfo(
+        id: 1,
+        title: 'First Title',
+        description:
+            'Why do we use it? It is a long established fact that a reader will be distracted...',
+        createAt: '2021-10-10',
+        isFavorite: true,
+        replyCount: 3,
+      ),
+      RecordInfo(
+          id: 2,
+          title: 'Second Title',
+          description: 'This is another description for the second record.',
+          createAt: '2021-10-11',
+          isFavorite: false,
+          replyCount: 1),
+      RecordInfo(
+        id: 3,
+        title: 'Third Title',
+        description: 'Another description goes here.',
+        createAt: '2021-10-12',
+        isFavorite: true,
+        replyCount: 0,
+      ),
+      RecordInfo(
+          id: 4,
+          title: 'Fourth Title',
+          description: 'Description for the fourth record.',
+          createAt: '2021-10-13',
+          isFavorite: false,
+          replyCount: 6),
+      RecordInfo(
+        id: 5,
+        title: 'Fifth Title',
+        description: 'Description for the fifth record.',
+        createAt: '2021-10-13',
+        isFavorite: false,
+        replyCount: 0,
+      ),
+      RecordInfo(
+        id: 6,
+        title: 'Sixth Title',
+        description: 'Description for the sixth record.',
+        createAt: '2021-10-13',
+        isFavorite: false,
+        replyCount: 2,
+      ),
+      RecordInfo(
+        id: 7,
+        title: 'Seventh Title',
+        description: 'Description for the seventh record.',
+        createAt: '2021-10-13',
+        isFavorite: false,
+        replyCount: 0,
+      ),
+      RecordInfo(
+        id: 8,
+        title: 'Eighth Title',
+        description: 'Description for the eighth record.',
+        createAt: '2021-10-13',
+        isFavorite: false,
+        replyCount: 0,
+      ),
+      RecordInfo(
+        id: 9,
+        title: 'Ninth Title',
+        description: 'Description for the ninth record.',
+        createAt: '2021-10-13',
+        isFavorite: false,
+        replyCount: 0,
+      ),
+      RecordInfo(
+        id: 10,
+        title: 'Tenth Title',
+        description: 'Description for the tenth record.',
+        createAt: '2021-10-13',
+        isFavorite: false,
+        replyCount: 10,
+      ),
+    ];
+    return SingleChildScrollView(
+      controller: widget.scrollController,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: Container(
+              margin: EdgeInsets.only(top: 50),
+              height: MediaQuery.of(context).size.height * 0.2,
+              child: Icon(Icons.star, size: 100, color: Colors.amber),
+            ),
+          ),
+          ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: records.length,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return RecordTile(records: records[index]);
+              }),
+        ],
+      ),
+    );
   }
 }

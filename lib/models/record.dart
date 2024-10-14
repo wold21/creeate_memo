@@ -5,6 +5,8 @@ class RecordInfo {
   final String createAt;
   final String? updateAt;
   final bool isDelete;
+  final bool isFavorite;
+  final int replyCount;
 
   RecordInfo({
     required this.id,
@@ -13,5 +15,7 @@ class RecordInfo {
     required this.createAt,
     this.updateAt,
     this.isDelete = false,
+    this.isFavorite = false,
+    required this.replyCount,
   });
 }
