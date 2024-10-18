@@ -1,9 +1,10 @@
 import 'package:create_author/components/record_tile.dart';
 import 'package:create_author/models/record.dart';
+import 'package:create_author/pages/scaffold_page.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  ScrollController scrollController;
+  final ScrollController scrollController;
   HomePage({super.key, required this.scrollController});
 
   @override
@@ -96,12 +97,51 @@ class _HomePageState extends State<HomePage> {
     ];
     return SingleChildScrollView(
         controller: widget.scrollController,
-        child: ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: records.length,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              return RecordTile(records: records[index]);
-            }));
+        child: Column(
+          children: [
+            SafeArea(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      final scaffoldPageState =
+                          context.findAncestorStateOfType<ScaffoldPageState>();
+                      scaffoldPageState?.showInputSheet();
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 15.0, horizontal: 15.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: const [
+                          Text(
+                            'What\'s new',
+                            style: TextStyle(
+                                color: Color(0xFF5F5F5F), fontSize: 20),
+                          ),
+                          Icon(
+                            Icons.add_circle_outline_rounded,
+                            size: 30,
+                            color: Color(0xFF5F5F5F),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: records.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return RecordTile(records: records[index]);
+                      }),
+                ],
+              ),
+            ),
+          ],
+        ));
   }
 }

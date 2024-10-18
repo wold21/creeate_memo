@@ -11,10 +11,10 @@ class ScaffoldPage extends StatefulWidget {
   const ScaffoldPage({super.key});
 
   @override
-  State<ScaffoldPage> createState() => _ScaffoldPageState();
+  State<ScaffoldPage> createState() => ScaffoldPageState();
 }
 
-class _ScaffoldPageState extends State<ScaffoldPage> {
+class ScaffoldPageState extends State<ScaffoldPage> {
   late final List _pages;
   int _pageIndex = 0;
   final TextEditingController _controller = TextEditingController();
@@ -57,7 +57,7 @@ class _ScaffoldPageState extends State<ScaffoldPage> {
 
   void _onItemTapped(int index) {
     if (index == -1) {
-      _showInputSheet();
+      showInputSheet();
     } else {
       setState(() {
         _pageIndex = index > 1 ? index - 1 : index;
@@ -65,7 +65,7 @@ class _ScaffoldPageState extends State<ScaffoldPage> {
     }
   }
 
-  void _showInputSheet() {
+  void showInputSheet() {
     showModalBottomSheet(
       context: context,
       isDismissible: true,
@@ -74,11 +74,10 @@ class _ScaffoldPageState extends State<ScaffoldPage> {
         return RecordCreate(
           controller: _controller,
           onSubmit: (String memo) {
-            // 여기에 메모를 저장하는 로직 추가
-            Navigator.pop(context); // 다이얼로그 닫기
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('메모가 추가되었습니다: $memo')),
-            );
+            print('메모가 추가되었습니다: $memo');
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //   SnackBar(content: Text('메모가 추가되었습니다: $memo')),
+            // );
           },
         );
       },
@@ -126,37 +125,6 @@ class _ScaffoldPageState extends State<ScaffoldPage> {
                 ),
                 child: CustomBottomNavBar(
                     currentIndex: _pageIndex, onTap: _onItemTapped),
-                // child: BottomNavigationBar(
-                //   backgroundColor: Color(0xff1A1918),
-                //   currentIndex: _pageIndex,
-                //   onTap: _onItemTapped,
-                //   showSelectedLabels: false,
-                //   showUnselectedLabels: false,
-                //   iconSize: 25,
-                //   items: const [
-                //     BottomNavigationBarItem(
-                //         icon: Icon(
-                //           Icons.home_filled,
-                //           color: Color.fromARGB(255, 72, 72, 72),
-                //         ),
-                //         activeIcon:
-                //             Icon(Icons.home_filled, color: Color(0xffF0EFEB)),
-                //         label: 'Home'),
-                //     BottomNavigationBarItem(
-                //       icon: Icon(Icons.add_box_outlined,
-                //           color: Color.fromARGB(255, 72, 72, 72)),
-                //       activeIcon: Icon(Icons.add_box_outlined,
-                //           color: Color(0xffF0EFEB)),
-                //       label: 'Post',
-                //     ),
-                //     BottomNavigationBarItem(
-                //         icon: Icon(Icons.favorite_border_rounded,
-                //             color: Color.fromARGB(255, 72, 72, 72)),
-                //         activeIcon: Icon(Icons.favorite_rounded,
-                //             color: Color(0xffF0EFEB)),
-                //         label: 'Favorite'),
-                //   ],
-                // ),
               ),
             ),
           ),

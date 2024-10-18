@@ -48,6 +48,7 @@ class RecordCreate extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       FocusScope.of(context).unfocus();
+                      controller.clear();
                       Navigator.pop(context);
                     },
                     child: Text(
@@ -99,6 +100,7 @@ class RecordCreate extends StatelessWidget {
                             ? () {
                                 FocusScope.of(context).unfocus();
                                 onSubmit(controller.text);
+                                controller.clear();
                                 Navigator.pop(context);
                               }
                             : null,
