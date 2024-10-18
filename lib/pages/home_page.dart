@@ -95,26 +95,13 @@ class _HomePageState extends State<HomePage> {
       ),
     ];
     return SingleChildScrollView(
-      controller: widget.scrollController,
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
-            child: Container(
-              margin: EdgeInsets.only(top: 50),
-              height: MediaQuery.of(context).size.height * 0.2,
-              child: Icon(Icons.star, size: 100, color: Colors.amber),
-            ),
-          ),
-          ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: records.length,
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return RecordTile(records: records[index]);
-              }),
-        ],
-      ),
-    );
+        controller: widget.scrollController,
+        child: ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: records.length,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              return RecordTile(records: records[index]);
+            }));
   }
 }
