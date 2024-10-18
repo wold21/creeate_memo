@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class CustomNavItem extends StatelessWidget {
-  int index;
+  final int index;
   final Function(int) onTap;
-  IconData icon;
-  bool isActive;
-  CustomNavItem(
+  final IconData icon;
+  final bool isActive;
+  const CustomNavItem(
       {super.key,
       required this.index,
       required this.onTap,
