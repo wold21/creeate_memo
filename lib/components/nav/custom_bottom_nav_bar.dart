@@ -1,4 +1,4 @@
-import 'package:create_author/components/custom_nav_item.dart';
+import 'package:create_author/components/nav/custom_nav_item.dart';
 import 'package:flutter/material.dart';
 
 class CustomBottomNavBar extends StatelessWidget {

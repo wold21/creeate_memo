@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:create_author/components/custom_bottom_nav_bar.dart';
-import 'package:create_author/components/record_create.dart';
+import 'package:create_author/components/nav/custom_bottom_nav_bar.dart';
+import 'package:create_author/components/record/record_create.dart';
 import 'package:create_author/pages/favorite_page.dart';
 import 'package:create_author/pages/home_page.dart';
 import 'package:flutter/material.dart';

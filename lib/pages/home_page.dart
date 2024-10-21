@@ -1,4 +1,5 @@
-import 'package:create_author/components/record_tile.dart';
+import 'package:create_author/components/record/record_detail.dart';
+import 'package:create_author/components/record/record_tile.dart';
 import 'package:create_author/models/record.dart';
 import 'package:create_author/pages/scaffold_page.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ class _HomePageState extends State<HomePage> {
         id: 1,
         title: 'First Title',
         description:
-            'Why do we use it? It is a long established fact that a reader will be distracted...',
+            'Why\n do\n we\n use\n it?\n It\n is\n a \nlong established\n fact\n that\n a reader\n will\n be\n distracted\n by\n the\n\n\n readable\n content\n of\n a\n page\n\n\n \nwhen\n looking\n at\n its\n layout.sdsadsadsadhsakahfskljfhalwiuehflwieucvbnsealkvubaslidvubnsaliuefnceurhlwaifhlkszudhfgsailudgliasekufhsdlkughdriulbhrsdlkvjhndk;livfghjesoifuhaslkfujhseliufhaselkjfnsd;lovijdfs;ql2yugt1iku2ygekiuGClIKUGvLIDUVdSLIuviV\n;aupvai87yai87y9p8weyr982qy34rliq32urhglaikufghsldukfg7ueotfye7ifylawiurh23qliury23o9i583yl9',
         createAt: '2021-10-10',
         isFavorite: true,
         replyCount: 3,
@@ -42,7 +43,8 @@ class _HomePageState extends State<HomePage> {
       RecordInfo(
           id: 4,
           title: 'Fourth Title',
-          description: 'Description for the fourth record.',
+          description:
+              'Why do we use it? It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.sdsadsadsadhsakahfskljfhalwiuehflwieucvbnsealkvubaslidvubnsaliuefnceurhlwaifhlkszudhfgsailudgliasekufhsdlkughdriulbhrsdlkvjhndk;livfghjesoifuhaslkfujhseliufhaselkjfnsd;lovijdfs;ql2yugt1iku2ygekiuGClIKUGvLIDUVdSLIuviV;aupvai87yai87y9p8weyr982qy34rliq32urhglaikufghsldukfg7ueotfye7ifylawiurh23qliury23o9i583yl9',
           createAt: '2021-10-13',
           isFavorite: false,
           replyCount: 6),
@@ -65,7 +67,8 @@ class _HomePageState extends State<HomePage> {
       RecordInfo(
         id: 7,
         title: 'Seventh Title',
-        description: 'Description for the seventh record.',
+        description:
+            'Why do we use it? It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.sdsadsadsadhsakahfskljfhalwiuehflwieucvbnsealkvubaslidvubnsaliuefnceurhlwaifhlkszudhfgsailudgliasekufhsdlkughdriulbhrsdlkvjhndk;livfghjesoifuhaslkfujhseliufhaselkjfnsd;lovijdfs;ql2yugt1iku2ygekiuGClIKUGvLIDUVdSLIuviV;aupvai87yai87y9p8weyr982qy34rliq32urhglaikufghsldukfg7ueotfye7ifylawiurh23qliury23o9i583yl9',
         createAt: '2021-10-13',
         isFavorite: false,
         replyCount: 0,
@@ -101,8 +104,6 @@ class _HomePageState extends State<HomePage> {
           children: [
             SafeArea(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   GestureDetector(
                     onTap: () {
@@ -112,10 +113,10 @@ class _HomePageState extends State<HomePage> {
                     },
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                          vertical: 15.0, horizontal: 15.0),
+                          vertical: 15.0, horizontal: 20.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: const [
                           Text(
                             'What\'s new',
@@ -136,7 +137,17 @@ class _HomePageState extends State<HomePage> {
                       itemCount: records.length,
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
-                        return RecordTile(records: records[index]);
+                        return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      RecordDetail(record: records[index]),
+                                ),
+                              );
+                            },
+                            child: RecordTile(records: records[index]));
                       }),
                 ],
               ),

@@ -82,10 +82,10 @@ class RecordTile extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
-            width: 3,
+            width: 1,
             color: Color(0xff4D4D4D),
           ),
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 15.0),
