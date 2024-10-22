@@ -18,4 +18,17 @@ class RecordInfo {
     this.isFavorite = false,
     required this.replyCount,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'description': description,
+      'createAt': createAt,
+      'updateAt': updateAt,
+      'isDelete': isDelete ? 1 : 0,
+      'isFavorite': isFavorite ? 1 : 0,
+      'replyCount': replyCount,
+    };
+  }
 }

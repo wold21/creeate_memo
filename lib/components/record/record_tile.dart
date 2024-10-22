@@ -1,5 +1,6 @@
 import 'package:create_author/components/context_menu.dart';
 import 'package:create_author/models/record.dart';
+import 'package:create_author/pages/scaffold_page.dart';
 import 'package:flutter/material.dart';
 
 class RecordTile extends StatelessWidget {
@@ -50,7 +51,9 @@ class RecordTile extends StatelessWidget {
                           textColor: Color(0xFFC8C8C8),
                           iconColor: Color(0xFFC8C8C8),
                           onTap: () {
-                            print('edit');
+                            final scaffoldPageState = context
+                                .findAncestorStateOfType<ScaffoldPageState>();
+                            scaffoldPageState?.showInputSheet();
                           },
                         ),
                         Divider(color: Color(0xFF4D4D4D)),

@@ -1,7 +1,10 @@
+import 'package:create_author/databases/record_helper.dart';
 import 'package:create_author/pages/scaffold_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(CreateAnAuthor());
+void main() => runApp(ChangeNotifierProvider(
+    create: (_) => RecordHelper(), child: CreateAnAuthor()));
 
 class CreateAnAuthor extends StatelessWidget {
   const CreateAnAuthor({super.key});
