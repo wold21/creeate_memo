@@ -16,8 +16,18 @@ class RecordInfo {
     this.updateAt,
     this.isDelete = false,
     this.isFavorite = false,
-    required this.replyCount,
+    this.replyCount = 0,
   });
+
+  RecordInfo.create({
+    required this.title,
+    required this.description,
+  })  : id = 0,
+        createAt = DateTime.now().toIso8601String(),
+        updateAt = null,
+        isDelete = false,
+        isFavorite = false,
+        replyCount = 0;
 
   Map<String, dynamic> toMap() {
     return {

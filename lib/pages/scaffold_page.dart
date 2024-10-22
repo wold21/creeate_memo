@@ -1,6 +1,7 @@
 import 'package:create_author/components/nav/custom_bottom_nav_bar.dart';
 import 'package:create_author/components/record/record_create.dart';
 import 'package:create_author/databases/record_helper.dart';
+import 'package:create_author/models/record.dart';
 import 'package:create_author/pages/favorite_page.dart';
 import 'package:create_author/pages/home_page.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +17,6 @@ class ScaffoldPage extends StatefulWidget {
 class ScaffoldPageState extends State<ScaffoldPage> {
   late final List _pages;
   int _pageIndex = 0;
-  final TextEditingController _controller = TextEditingController();
-
   double _bottomNavPosition = 0;
   final ScrollController _scrollController = ScrollController();
 
@@ -50,7 +49,6 @@ class ScaffoldPageState extends State<ScaffoldPage> {
   @override
   void dispose() {
     _scrollController.dispose();
-    _controller.dispose();
     super.dispose();
   }
 
@@ -71,12 +69,8 @@ class ScaffoldPageState extends State<ScaffoldPage> {
       isScrollControlled: true,
       builder: (BuildContext context) {
         return RecordCreate(
-          controller: _controller,
-          onSubmit: (String memo) {
-            print('메모가 추가되었습니다: $memo');
-            // ScaffoldMessenger.of(context).showSnackBar(
-            //   SnackBar(content: Text('메모가 추가되었습니다: $memo')),
-            // );
+          onSubmit: (RecordInfo record) {
+            RecordHelper().insertRecord(record);
           },
         );
       },

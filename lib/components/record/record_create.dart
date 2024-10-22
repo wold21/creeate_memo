@@ -1,18 +1,35 @@
+import 'package:create_author/models/record.dart';
 import 'package:flutter/material.dart';
 
-class RecordCreate extends StatelessWidget {
-  final TextEditingController controller;
-  final Function(String) onSubmit;
+class RecordCreate extends StatefulWidget {
+  final Function(RecordInfo) onSubmit;
+  const RecordCreate({super.key, required this.onSubmit});
+
+  @override
+  State<RecordCreate> createState() => _RecordCreateState();
+}
+
+class _RecordCreateState extends State<RecordCreate> {
+  late TextEditingController _titleController;
+  late TextEditingController _descriptionController;
   final ValueNotifier<bool> isButtonEnabled = ValueNotifier(false);
 
-  RecordCreate({
-    Key? key,
-    required this.controller,
-    required this.onSubmit,
-  }) : super(key: key) {
-    controller.addListener(() {
-      isButtonEnabled.value = controller.text.isNotEmpty;
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController();
+    _descriptionController = TextEditingController();
+    _descriptionController.addListener(() {
+      isButtonEnabled.value = _descriptionController.text.trim().isNotEmpty;
     });
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    isButtonEnabled.dispose();
+    super.dispose();
   }
 
   @override
@@ -36,19 +53,35 @@ class RecordCreate extends StatelessWidget {
               padding: const EdgeInsets.all(15.0),
               child: Row(
                 children: [
-                  Text(
-                    'New Record',
-                    style: TextStyle(
-                      color: Color(0xffF2F2F2),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                  Expanded(
+                    child: TextField(
+                      controller: _titleController,
+                      onChanged: (value) {
+                        // setState(() {
+                        //   _title = value;
+                        // });
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'Title',
+                        hintStyle: TextStyle(
+                            color: Color(0xFF4D4D4D),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                        border: InputBorder.none,
+                      ),
+                      style: TextStyle(
+                          color: Color(0xffF0EFEB),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                      autofocus: true,
                     ),
                   ),
                   Spacer(),
                   GestureDetector(
                     onTap: () {
                       FocusScope.of(context).unfocus();
-                      controller.clear();
+                      _titleController.clear();
+                      _descriptionController.clear();
                       Navigator.pop(context);
                     },
                     child: Text(
@@ -69,13 +102,16 @@ class RecordCreate extends StatelessWidget {
                   child: Column(
                     children: [
                       TextField(
-                        controller: controller,
+                        controller: _descriptionController,
                         style: TextStyle(color: Color(0xffF2F2F2)),
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: 'What\'s new',
+                          hintStyle: TextStyle(
+                              color: Color(0xFF4D4D4D),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
                         ),
-                        autofocus: true,
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
                         textInputAction: TextInputAction.newline,
@@ -94,13 +130,18 @@ class RecordCreate extends StatelessWidget {
                     valueListenable: isButtonEnabled,
                     builder: (context, value, child) {
                       bool currentValue =
-                          controller.text.trim().isNotEmpty ? true : false;
+                          _titleController.text.trim().isNotEmpty &&
+                              _descriptionController.text.trim().isNotEmpty;
                       return TextButton(
                         onPressed: currentValue
                             ? () {
                                 FocusScope.of(context).unfocus();
-                                onSubmit(controller.text);
-                                controller.clear();
+                                widget.onSubmit(RecordInfo.create(
+                                  title: _titleController.text,
+                                  description: _descriptionController.text,
+                                ));
+                                _titleController.clear();
+                                _descriptionController.clear();
                                 Navigator.pop(context);
                               }
                             : null,

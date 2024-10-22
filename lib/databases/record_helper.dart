@@ -32,7 +32,7 @@ class RecordHelper extends ChangeNotifier {
       version: 1,
       onCreate: (db, version) {
         String sql =
-            'CREATE TABLE records(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, createAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, isFavorite INTEGER, replyCount INTEGER, updateAt INTEGER)';
+            'CREATE TABLE records(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, createAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updateAt TIMESTAMP DEFAULT NULL, isDelete INTEGER DEFAULT 0, isFavorite INTEGER DEFAULT 0, replyCount INTEGER DEFAULT 0)';
         return db.execute(
           sql,
         );
