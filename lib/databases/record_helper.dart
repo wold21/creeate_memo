@@ -43,7 +43,8 @@ class RecordHelper extends ChangeNotifier {
   // Get all records
   Future<List<RecordInfo>> getRecords() async {
     final Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('records');
+    final List<Map<String, dynamic>> maps =
+        await db.query('records', orderBy: 'createAt DESC');
     return List.generate(maps.length, (i) {
       return RecordInfo(
         id: maps[i]['id'],
@@ -65,6 +66,27 @@ class RecordHelper extends ChangeNotifier {
       'records',
       record.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  // Update record
+  Future<void> updateRecord(RecordInfo record) async {
+    final db = await database;
+    await db.update(
+      'records',
+      record.toMap(),
+      where: 'id = ?',
+      whereArgs: [record.id],
+    );
+  }
+
+  // Delete record
+  Future<void> deleteRecord(int id) async {
+    final db = await database;
+    await db.delete(
+      'records',
+      where: 'id = ?',
+      whereArgs: [id],
     );
   }
 }

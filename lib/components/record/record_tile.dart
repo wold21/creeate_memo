@@ -1,6 +1,7 @@
 import 'package:create_author/components/context_menu.dart';
 import 'package:create_author/models/record.dart';
 import 'package:create_author/pages/scaffold_page.dart';
+import 'package:create_author/utils/date.dart';
 import 'package:flutter/material.dart';
 
 class RecordTile extends StatelessWidget {
@@ -110,15 +111,7 @@ class RecordTile extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          'Created',
-                          style: TextStyle(
-                              color: Color(0xFF4D4D4D),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w300),
-                        ),
-                        SizedBox(width: 5),
-                        Text(
-                          records.createAt,
+                          getDate(records.createAt),
                           style: TextStyle(
                               color: Color(0xFF4D4D4D),
                               fontSize: 12,

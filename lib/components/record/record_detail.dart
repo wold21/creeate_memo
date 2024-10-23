@@ -1,4 +1,5 @@
 import 'package:create_author/models/record.dart';
+import 'package:create_author/utils/date.dart';
 import 'package:flutter/material.dart';
 
 class RecordDetail extends StatefulWidget {
@@ -123,7 +124,7 @@ class _RecordDetailState extends State<RecordDetail> {
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
                         child: Text(
-                          'Created: ${widget.record.createAt}',
+                          getDate(widget.record.createAt),
                           style: TextStyle(
                               color: Color(0xFF4D4D4D),
                               fontSize: 12,
