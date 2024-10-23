@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
-  CustomBottomNavBar(
+  const CustomBottomNavBar(
       {super.key, required this.currentIndex, required this.onTap});
 
   @override
@@ -32,7 +32,7 @@ class CustomBottomNavBar extends StatelessWidget {
           CustomNavItem(
             index: 1,
             onTap: onTap,
-            icon: Icons.favorite_border_rounded,
+            icon: Icons.star_border_sharp,
             isActive: currentIndex == 1,
           ),
         ],

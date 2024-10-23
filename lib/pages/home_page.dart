@@ -1,7 +1,6 @@
 import 'package:create_author/components/record/record_detail.dart';
 import 'package:create_author/components/record/record_tile.dart';
 import 'package:create_author/databases/record_helper.dart';
-import 'package:create_author/models/record.dart';
 import 'package:create_author/pages/scaffold_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -62,7 +61,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Consumer<RecordHelper>(
                     builder: (context, recordHelper, child) {
-                      final records = recordHelper.records;
+                      final records = recordHelper.allRecords;
                       if (records.isEmpty) {
                         return Column(
                           children: [

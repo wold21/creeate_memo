@@ -43,7 +43,7 @@ class ScaffoldPageState extends State<ScaffoldPage> {
 
     _pages = [
       HomePage(scrollController: _scrollController),
-      FavotirePage(),
+      FavoritePage(scrollController: _scrollController),
     ];
   }
 

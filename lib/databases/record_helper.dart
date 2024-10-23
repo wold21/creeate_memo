@@ -8,7 +8,8 @@ class RecordHelper extends ChangeNotifier {
 
   // Database instance
   static Database? _database;
-  List<RecordInfo> _records = [];
+  List<RecordInfo> _allRecords = [];
+  List<RecordInfo> _favoriteRecords = [];
 
   RecordHelper._internal();
 
@@ -41,14 +42,17 @@ class RecordHelper extends ChangeNotifier {
     );
   }
 
+  Future<void> callUpdate() async {
+    await getRecords();
+    await getFavoriteRecords();
+  }
+
   // Get all records
-  Future<void> getRecords({bool isFavorite = false}) async {
+  Future<void> getRecords() async {
     final Database db = await database;
     final List<Map<String, dynamic>> maps = await db.query('records',
-        where: 'isDelete = 0 AND isFavorite = ?',
-        whereArgs: [isFavorite ? 1 : 0],
-        orderBy: 'createAt DESC');
-    _records = List.generate(maps.length, (i) {
+        where: 'isDelete = 0', orderBy: 'createAt DESC');
+    _allRecords = List.generate(maps.length, (i) {
       return RecordInfo(
         id: maps[i]['id'],
         title: maps[i]['title'],
@@ -60,10 +64,34 @@ class RecordHelper extends ChangeNotifier {
         replyCount: maps[i]['replyCount'],
       );
     });
+
     notifyListeners();
   }
 
-  List<RecordInfo> get records => _records;
+  List<RecordInfo> get allRecords => _allRecords;
+
+  // Get favorite records
+  Future<void> getFavoriteRecords() async {
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('records',
+        where: 'isDelete = 0 AND isFavorite = 1', orderBy: 'createAt DESC');
+    _favoriteRecords = List.generate(maps.length, (i) {
+      return RecordInfo(
+        id: maps[i]['id'],
+        title: maps[i]['title'],
+        description: maps[i]['description'],
+        createAt: maps[i]['createAt'],
+        updateAt: maps[i]['updateAt'],
+        isDelete: maps[i]['isDelete'] == 1,
+        isFavorite: maps[i]['isFavorite'] == 1,
+        replyCount: maps[i]['replyCount'],
+      );
+    });
+
+    notifyListeners();
+  }
+
+  List<RecordInfo> get favoriteRecords => _favoriteRecords;
 
   // Insert record
   Future<void> insertRecord(RecordInfo record) async {
@@ -74,13 +102,13 @@ class RecordHelper extends ChangeNotifier {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
-    await getRecords();
+    callUpdate();
   }
 
   // Toggle favorite
   Future<void> toggleFavorite(int id) async {
     final db = await database;
-    final record = _records.firstWhere((element) => element.id == id);
+    final record = _allRecords.firstWhere((element) => element.id == id);
     await db.update(
       'records',
       {'isFavorite': record.isFavorite ? 0 : 1},
@@ -88,7 +116,7 @@ class RecordHelper extends ChangeNotifier {
       whereArgs: [id],
     );
 
-    await getRecords();
+    await callUpdate();
   }
 
   // Update record
@@ -101,7 +129,7 @@ class RecordHelper extends ChangeNotifier {
       whereArgs: [record.id],
     );
 
-    await getRecords();
+    callUpdate();
   }
 
   // Delete record
@@ -113,6 +141,6 @@ class RecordHelper extends ChangeNotifier {
       where: 'id = ?',
       whereArgs: [id],
     );
-    await getRecords();
+    callUpdate();
   }
 }
