@@ -3,6 +3,7 @@ import 'package:create_author/components/record/record_create.dart';
 import 'package:create_author/databases/record_helper.dart';
 import 'package:create_author/models/record.dart';
 import 'package:create_author/pages/favorite_page.dart';
+import 'package:create_author/pages/graph_page.dart';
 import 'package:create_author/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -44,6 +45,7 @@ class ScaffoldPageState extends State<ScaffoldPage> {
     _pages = [
       HomePage(scrollController: _scrollController),
       FavoritePage(scrollController: _scrollController),
+      GraphPage(),
     ];
   }
 
@@ -58,7 +60,7 @@ class ScaffoldPageState extends State<ScaffoldPage> {
       showInputSheet();
     } else {
       setState(() {
-        _pageIndex = index > 1 ? index - 1 : index;
+        _pageIndex = index;
       });
     }
   }

@@ -18,15 +18,10 @@ class CustomNavItem extends StatelessWidget {
       onTap: () {
         onTap(index);
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            color:
-                isActive ? Color(0xffF0EFEB) : Color.fromARGB(255, 72, 72, 72),
-          ),
-        ],
+      child: Icon(
+        icon,
+        color: isActive ? Color(0xffF0EFEB) : Color.fromARGB(255, 72, 72, 72),
+        size: 25,
       ),
     );
   }

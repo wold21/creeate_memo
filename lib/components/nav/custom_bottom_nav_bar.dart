@@ -35,6 +35,12 @@ class CustomBottomNavBar extends StatelessWidget {
             icon: Icons.star_border_sharp,
             isActive: currentIndex == 1,
           ),
+          CustomNavItem(
+            index: 2,
+            onTap: onTap,
+            icon: Icons.grass_rounded,
+            isActive: currentIndex == 2,
+          ),
         ],
       ),
     );
