@@ -179,16 +179,16 @@ class RecordTile extends StatelessWidget {
                             color: Color(0xffF0EFEB)),
                       ),
                     ]),
-                    SizedBox(width: 10),
-                    Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                      Icon(Icons.insert_comment_outlined,
-                          color: Color(0xffF0EFEB), size: 22),
-                      SizedBox(width: 5),
-                      Text(
-                        records.replyCount.toString(),
-                        style: TextStyle(color: Color(0xffF0EFEB)),
-                      )
-                    ])
+                    // SizedBox(width: 10),
+                    // Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                    //   Icon(Icons.insert_comment_outlined,
+                    //       color: Color(0xffF0EFEB), size: 22),
+                    //   SizedBox(width: 5),
+                    //   Text(
+                    //     records.replyCount.toString(),
+                    //     style: TextStyle(color: Color(0xffF0EFEB)),
+                    //   )
+                    // ])
                   ],
                 ),
               ),
