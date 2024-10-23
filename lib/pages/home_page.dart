@@ -18,12 +18,14 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<RecordHelper>(context, listen: false).getRecords();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final recordHelper = Provider.of<RecordHelper>(context);
-
     return SingleChildScrollView(
         controller: widget.scrollController,
         child: Column(
@@ -58,36 +60,23 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  FutureBuilder<List<RecordInfo>>(
-                      future: recordHelper.getRecords(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          // 로딩 중일 때
-                          return Center(child: CircularProgressIndicator());
-                        } else if (snapshot.hasError) {
-                          // 에러 발생 시
-                          return Center(
-                              child: Text('Error: ${snapshot.error}'));
-                        } else if (!snapshot.hasData ||
-                            snapshot.data!.isEmpty) {
-                          // 데이터가 없을 때
-                          return Column(
-                            children: [
-                              SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.4,
-                              ),
-                              Center(
-                                child: Text('Start your first record.',
-                                    style: TextStyle(
-                                        color: Color(0xFF4D4D4D),
-                                        fontSize: 18)),
-                              ),
-                            ],
-                          );
-                        }
-                        final records = snapshot.data!;
+                  Consumer<RecordHelper>(
+                    builder: (context, recordHelper, child) {
+                      final records = recordHelper.records;
+                      if (records.isEmpty) {
+                        return Column(
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.4,
+                            ),
+                            Center(
+                              child: Text('Start your first record.',
+                                  style: TextStyle(
+                                      color: Color(0xFF4D4D4D), fontSize: 18)),
+                            ),
+                          ],
+                        );
+                      } else {
                         return ListView.builder(
                             physics: NeverScrollableScrollPhysics(),
                             itemCount: records.length,
@@ -105,7 +94,9 @@ class _HomePageState extends State<HomePage> {
                                   },
                                   child: RecordTile(records: records[index]));
                             });
-                      })
+                      }
+                    },
+                  )
                 ],
               ),
             ),

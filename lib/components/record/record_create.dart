@@ -136,7 +136,7 @@ class _RecordCreateState extends State<RecordCreate> {
                         onPressed: currentValue
                             ? () {
                                 FocusScope.of(context).unfocus();
-                                widget.onSubmit(RecordInfo.create(
+                                widget.onSubmit(RecordInfo.insert(
                                   title: _titleController.text,
                                   description: _descriptionController.text,
                                 ));

@@ -1,8 +1,10 @@
 import 'package:create_author/components/context_menu.dart';
+import 'package:create_author/databases/record_helper.dart';
 import 'package:create_author/models/record.dart';
 import 'package:create_author/pages/scaffold_page.dart';
 import 'package:create_author/utils/date.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RecordTile extends StatelessWidget {
   final RecordInfo records;
@@ -64,7 +66,9 @@ class RecordTile extends StatelessWidget {
                           textColor: Colors.red,
                           iconColor: Colors.red,
                           onTap: () {
-                            print('delete');
+                            Provider.of<RecordHelper>(context, listen: false)
+                                .deleteRecord(records.id);
+                            Navigator.pop(context);
                           },
                         ),
                       ],
@@ -101,12 +105,18 @@ class RecordTile extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      records.title,
-                      style: TextStyle(
-                          color: Color(0xffF0EFEB),
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: Text(
+                          records.title,
+                          style: TextStyle(
+                              color: Color(0xffF0EFEB),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                     ),
                     Row(
                       children: [
@@ -143,7 +153,7 @@ class RecordTile extends StatelessWidget {
                         records.description,
                         style: TextStyle(
                             color: Color(0xffF0EFEB),
-                            fontWeight: FontWeight.normal),
+                            fontWeight: FontWeight.w300),
                         maxLines: 5,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -156,12 +166,18 @@ class RecordTile extends StatelessWidget {
                 child: Row(
                   children: [
                     Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                      Icon(
-                          records.isFavorite
-                              ? Icons.star_outlined
-                              : Icons.star_outline_outlined,
-                          size: 22,
-                          color: Color(0xffF0EFEB)),
+                      GestureDetector(
+                        onTap: () {
+                          Provider.of<RecordHelper>(context, listen: false)
+                              .toggleFavorite(records.id);
+                        },
+                        child: Icon(
+                            records.isFavorite
+                                ? Icons.star_outlined
+                                : Icons.star_outline_outlined,
+                            size: 22,
+                            color: Color(0xffF0EFEB)),
+                      ),
                     ]),
                     SizedBox(width: 10),
                     Row(crossAxisAlignment: CrossAxisAlignment.end, children: [

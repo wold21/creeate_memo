@@ -8,6 +8,7 @@ class RecordHelper extends ChangeNotifier {
 
   // Database instance
   static Database? _database;
+  List<RecordInfo> _records = [];
 
   RecordHelper._internal();
 
@@ -41,11 +42,13 @@ class RecordHelper extends ChangeNotifier {
   }
 
   // Get all records
-  Future<List<RecordInfo>> getRecords() async {
+  Future<void> getRecords({bool isFavorite = false}) async {
     final Database db = await database;
-    final List<Map<String, dynamic>> maps =
-        await db.query('records', orderBy: 'createAt DESC');
-    return List.generate(maps.length, (i) {
+    final List<Map<String, dynamic>> maps = await db.query('records',
+        where: 'isDelete = 0 AND isFavorite = ?',
+        whereArgs: [isFavorite ? 1 : 0],
+        orderBy: 'createAt DESC');
+    _records = List.generate(maps.length, (i) {
       return RecordInfo(
         id: maps[i]['id'],
         title: maps[i]['title'],
@@ -57,7 +60,10 @@ class RecordHelper extends ChangeNotifier {
         replyCount: maps[i]['replyCount'],
       );
     });
+    notifyListeners();
   }
+
+  List<RecordInfo> get records => _records;
 
   // Insert record
   Future<void> insertRecord(RecordInfo record) async {
@@ -67,6 +73,22 @@ class RecordHelper extends ChangeNotifier {
       record.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+
+    await getRecords();
+  }
+
+  // Toggle favorite
+  Future<void> toggleFavorite(int id) async {
+    final db = await database;
+    final record = _records.firstWhere((element) => element.id == id);
+    await db.update(
+      'records',
+      {'isFavorite': record.isFavorite ? 0 : 1},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    await getRecords();
   }
 
   // Update record
@@ -78,15 +100,19 @@ class RecordHelper extends ChangeNotifier {
       where: 'id = ?',
       whereArgs: [record.id],
     );
+
+    await getRecords();
   }
 
   // Delete record
   Future<void> deleteRecord(int id) async {
     final db = await database;
-    await db.delete(
+    await db.update(
       'records',
+      {'isDelete': 1},
       where: 'id = ?',
       whereArgs: [id],
     );
+    await getRecords();
   }
 }

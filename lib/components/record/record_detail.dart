@@ -1,6 +1,8 @@
+import 'package:create_author/databases/record_helper.dart';
 import 'package:create_author/models/record.dart';
 import 'package:create_author/utils/date.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RecordDetail extends StatefulWidget {
   final RecordInfo record;
@@ -33,7 +35,13 @@ class _RecordDetailState extends State<RecordDetail> {
   }
 
   void _saveRecord() {
-    print('Save record');
+    final record = RecordInfo.update(
+      id: widget.record.id,
+      title: _title,
+      description: _description,
+      createAt: widget.record.createAt,
+    );
+    Provider.of<RecordHelper>(context, listen: false).updateRecord(record);
   }
 
   void _closePop(bool isSaved) {
@@ -111,13 +119,13 @@ class _RecordDetailState extends State<RecordDetail> {
                             hintText: 'Title',
                             hintStyle: TextStyle(
                                 color: Color(0xffF0EFEB),
-                                fontSize: 18,
+                                fontSize: 25,
                                 fontWeight: FontWeight.bold),
                             border: InputBorder.none,
                           ),
                           style: TextStyle(
                               color: Color(0xffF0EFEB),
-                              fontSize: 18,
+                              fontSize: 25,
                               fontWeight: FontWeight.bold),
                         ),
                       ),

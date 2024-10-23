@@ -19,7 +19,7 @@ class RecordInfo {
     this.replyCount = 0,
   });
 
-  RecordInfo.create({
+  RecordInfo.insert({
     required this.title,
     required this.description,
   })  : id = 0,
@@ -29,9 +29,18 @@ class RecordInfo {
         isFavorite = false,
         replyCount = 0;
 
+  RecordInfo.update({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.createAt,
+  })  : updateAt = DateTime.now().toIso8601String(),
+        isDelete = false,
+        isFavorite = false,
+        replyCount = 0;
+
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'title': title,
       'description': description,
       'createAt': createAt,

@@ -6,6 +6,7 @@ import 'package:create_author/pages/favorite_page.dart';
 import 'package:create_author/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 
 class ScaffoldPage extends StatefulWidget {
   const ScaffoldPage({super.key});
@@ -70,7 +71,8 @@ class ScaffoldPageState extends State<ScaffoldPage> {
       builder: (BuildContext context) {
         return RecordCreate(
           onSubmit: (RecordInfo record) {
-            RecordHelper().insertRecord(record);
+            Provider.of<RecordHelper>(context, listen: false)
+                .insertRecord(record);
           },
         );
       },
