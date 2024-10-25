@@ -11,6 +11,19 @@ class ContributionHelper extends ChangeNotifier {
     return _instance;
   }
 
+  Future<Map<DateTime, int>> getAllContributions() async {
+    final db = await DatabaseHelper().database;
+    final List<Map<String, dynamic>> maps = await db.query('contributions',
+        orderBy: 'year DESC, month DESC, day DESC');
+    Map<DateTime, int> contributions = {};
+    for (var map in maps) {
+      DateTime date = DateTime(int.parse(map['year']), int.parse(map['month']),
+          int.parse(map['day']));
+      contributions[date] = map['count'];
+    }
+    return contributions;
+  }
+
   // Get contributions by year and month
   Future<Map<DateTime, int>> getContributionsByYearAndMonth(
       int year, int month) async {
@@ -18,10 +31,11 @@ class ContributionHelper extends ChangeNotifier {
     final List<Map<String, dynamic>> maps = await db.query('contributions',
         where: 'year = ? AND month = ?',
         whereArgs: [year, month],
-        orderBy: 'createAt DESC');
+        orderBy: 'lastUpdateAt DESC');
     Map<DateTime, int> contributions = {};
     for (var map in maps) {
-      DateTime date = DateTime(map['year'], map['month'], map['day']);
+      DateTime date = DateTime(int.parse(map['year']), int.parse(map['month']),
+          int.parse(map['day']));
       contributions[date] = map['count'];
     }
     return contributions;

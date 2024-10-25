@@ -38,7 +38,7 @@ class CustomBottomNavBar extends StatelessWidget {
           CustomNavItem(
             index: 2,
             onTap: onTap,
-            icon: Icons.grass_rounded,
+            icon: Icons.access_time_rounded,
             isActive: currentIndex == 2,
           ),
         ],

@@ -33,7 +33,7 @@ class _FavoritePageState extends State<FavoritePage> {
                 children: [
                   Padding(
                     padding:
-                        EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                        EdgeInsets.symmetric(vertical: 20.0, horizontal: 25.0),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
