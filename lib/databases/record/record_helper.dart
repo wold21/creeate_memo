@@ -1,13 +1,12 @@
+import 'package:create_author/databases/contribution/contribution_helper.dart';
+import 'package:create_author/databases/database_helper.dart';
 import 'package:create_author/models/record.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
 
 class RecordHelper extends ChangeNotifier {
   static final RecordHelper _instance = RecordHelper._internal();
 
-  // Database instance
-  static Database? _database;
   List<RecordInfo> _allRecords = [];
   List<RecordInfo> _favoriteRecords = [];
 
@@ -17,39 +16,35 @@ class RecordHelper extends ChangeNotifier {
     return _instance;
   }
 
-  // Database opened or create
-  Future<Database> get database async {
-    if (_database != null) {
-      return _database!;
-    }
-    _database = await _initDatabase();
-    return _database!;
-  }
-
-  // Database initialization
-  Future<Database> _initDatabase() async {
-    String path = join(await getDatabasesPath(), 'record.db');
-    return await openDatabase(
-      path,
-      version: 1,
-      onCreate: (db, version) {
-        String sql =
-            'CREATE TABLE records(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, createAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updateAt TIMESTAMP DEFAULT NULL, isDelete INTEGER DEFAULT 0, isFavorite INTEGER DEFAULT 0, replyCount INTEGER DEFAULT 0)';
-        return db.execute(
-          sql,
-        );
-      },
-    );
-  }
-
   Future<void> callUpdate() async {
     await getRecords();
     await getFavoriteRecords();
   }
 
+  // Get record by id
+  Future<RecordInfo?> getRecordById(int id) async {
+    final db = await DatabaseHelper().database;
+    final List<Map<String, dynamic>> maps = await db
+        .query('records', where: 'id = ? AND isDelete = 0', whereArgs: [id]);
+    if (maps.isNotEmpty) {
+      return RecordInfo(
+        id: maps.first['id'],
+        title: maps.first['title'],
+        description: maps.first['description'],
+        createAt: maps.first['createAt'],
+        updateAt: maps.first['updateAt'],
+        isDelete: maps.first['isDelete'] == 1,
+        isFavorite: maps.first['isFavorite'] == 1,
+        replyCount: maps.first['replyCount'],
+      );
+    } else {
+      return null;
+    }
+  }
+
   // Get all records
   Future<void> getRecords() async {
-    final Database db = await database;
+    final db = await DatabaseHelper().database;
     final List<Map<String, dynamic>> maps = await db.query('records',
         where: 'isDelete = 0', orderBy: 'createAt DESC');
     _allRecords = List.generate(maps.length, (i) {
@@ -72,7 +67,7 @@ class RecordHelper extends ChangeNotifier {
 
   // Get favorite records
   Future<void> getFavoriteRecords() async {
-    final Database db = await database;
+    final db = await DatabaseHelper().database;
     final List<Map<String, dynamic>> maps = await db.query('records',
         where: 'isDelete = 0 AND isFavorite = 1', orderBy: 'createAt DESC');
     _favoriteRecords = List.generate(maps.length, (i) {
@@ -95,19 +90,21 @@ class RecordHelper extends ChangeNotifier {
 
   // Insert record
   Future<void> insertRecord(RecordInfo record) async {
-    final db = await database;
+    final db = await DatabaseHelper().database;
     await db.insert(
       'records',
       record.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
-    callUpdate();
+    await callUpdate();
+    await ContributionHelper()
+        .addOrUpdateContribution(DateTime.parse(record.createAt), 'create');
   }
 
   // Toggle favorite
   Future<void> toggleFavorite(int id) async {
-    final db = await database;
+    final db = await DatabaseHelper().database;
     final record = _allRecords.firstWhere((element) => element.id == id);
     await db.update(
       'records',
@@ -121,7 +118,7 @@ class RecordHelper extends ChangeNotifier {
 
   // Update record
   Future<void> updateRecord(RecordInfo record) async {
-    final db = await database;
+    final db = await DatabaseHelper().database;
     await db.update(
       'records',
       record.toMap(),
@@ -129,18 +126,28 @@ class RecordHelper extends ChangeNotifier {
       whereArgs: [record.id],
     );
 
-    callUpdate();
+    await callUpdate();
+    await ContributionHelper()
+        .addOrUpdateContribution(DateTime.parse(record.createAt), 'update');
   }
 
   // Delete record
   Future<void> deleteRecord(int id) async {
-    final db = await database;
-    await db.update(
-      'records',
-      {'isDelete': 1},
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-    callUpdate();
+    final db = await DatabaseHelper().database;
+    final record = await getRecordById(id);
+    if (record != null) {
+      await db.update(
+        'records',
+        {'isDelete': 1},
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+
+      await callUpdate();
+      await ContributionHelper()
+          .addOrUpdateContribution(DateTime.parse(record!.createAt), 'delete');
+    } else {
+      throw Exception('Record not found');
+    }
   }
 }

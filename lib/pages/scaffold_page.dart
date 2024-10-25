@@ -1,6 +1,6 @@
 import 'package:create_author/components/nav/custom_bottom_nav_bar.dart';
 import 'package:create_author/components/record/record_create.dart';
-import 'package:create_author/databases/record_helper.dart';
+import 'package:create_author/databases/record/record_helper.dart';
 import 'package:create_author/models/record.dart';
 import 'package:create_author/pages/favorite_page.dart';
 import 'package:create_author/pages/graph_page.dart';

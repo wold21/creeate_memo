@@ -1,6 +1,6 @@
 import 'package:create_author/components/record/record_detail.dart';
 import 'package:create_author/components/record/record_tile.dart';
-import 'package:create_author/databases/record_helper.dart';
+import 'package:create_author/databases/record/record_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

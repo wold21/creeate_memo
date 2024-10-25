@@ -1,15 +1,20 @@
 import 'package:create_author/components/context_menu.dart';
-import 'package:create_author/databases/record_helper.dart';
+import 'package:create_author/databases/record/record_helper.dart';
 import 'package:create_author/models/record.dart';
 import 'package:create_author/pages/scaffold_page.dart';
 import 'package:create_author/utils/date.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class RecordTile extends StatelessWidget {
+class RecordTile extends StatefulWidget {
   final RecordInfo records;
   const RecordTile({super.key, required this.records});
 
+  @override
+  State<RecordTile> createState() => _RecordTileState();
+}
+
+class _RecordTileState extends State<RecordTile> {
   void _showBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -65,10 +70,11 @@ class RecordTile extends StatelessWidget {
                           icon: Icons.delete_forever_rounded,
                           textColor: Colors.red,
                           iconColor: Colors.red,
-                          onTap: () {
-                            Provider.of<RecordHelper>(context, listen: false)
-                                .deleteRecord(records.id);
+                          onTap: () async {
                             Navigator.pop(context);
+                            await Provider.of<RecordHelper>(context,
+                                    listen: false)
+                                .deleteRecord(widget.records.id);
                           },
                         ),
                       ],
@@ -109,7 +115,7 @@ class RecordTile extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: Text(
-                          records.title,
+                          widget.records.title,
                           style: TextStyle(
                               color: Color(0xffF0EFEB),
                               fontSize: 18,
@@ -121,7 +127,7 @@ class RecordTile extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          getDate(records.createAt),
+                          getDate(widget.records.createAt),
                           style: TextStyle(
                               color: Color(0xFF4D4D4D),
                               fontSize: 12,
@@ -150,7 +156,7 @@ class RecordTile extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        records.description,
+                        widget.records.description,
                         style: TextStyle(
                             color: Color(0xffF0EFEB),
                             fontWeight: FontWeight.w300),
@@ -169,10 +175,10 @@ class RecordTile extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           Provider.of<RecordHelper>(context, listen: false)
-                              .toggleFavorite(records.id);
+                              .toggleFavorite(widget.records.id);
                         },
                         child: Icon(
-                            records.isFavorite
+                            widget.records.isFavorite
                                 ? Icons.star_outlined
                                 : Icons.star_outline_outlined,
                             size: 22,
