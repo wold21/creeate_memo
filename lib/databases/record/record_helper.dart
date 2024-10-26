@@ -94,7 +94,7 @@ class RecordHelper extends ChangeNotifier {
 
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
   SELECT * FROM records
-    WHERE strftime('%Y%m%d', createAt) = ? Order By createAt DESC, id DESC
+    WHERE strftime('%Y%m%d', createAt) = ? AND isDelete = 0 Order By createAt DESC, id DESC
 ''', [formattedConditionDate]);
     return List.generate(maps.length, (i) {
       return RecordInfo(
