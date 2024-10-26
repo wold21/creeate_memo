@@ -32,6 +32,20 @@ class _HomePageState extends State<HomePage> {
             SafeArea(
               child: Column(
                 children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: 20, left: 25, right: 25, bottom: 5),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Records',
+                        style: TextStyle(
+                            color: Color(0xffF0EFEB),
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
                   GestureDetector(
                     onTap: () {
                       final scaffoldPageState =
@@ -39,16 +53,18 @@ class _HomePageState extends State<HomePage> {
                       scaffoldPageState?.showInputSheet();
                     },
                     child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 20.0, horizontal: 25.0),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 5.0, horizontal: 25.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: const [
-                          Text(
-                            'What\'s new',
-                            style: TextStyle(
-                                color: Color(0xFF5F5F5F), fontSize: 20),
+                          Expanded(
+                            child: Text(
+                              'What\'s new',
+                              style: TextStyle(
+                                  color: Color(0xFF5F5F5F), fontSize: 20),
+                            ),
                           ),
                           Icon(
                             Icons.add_circle_outline_rounded,

@@ -10,6 +10,7 @@ class RecordHelper extends ChangeNotifier {
 
   List<RecordInfo> _allRecords = [];
   List<RecordInfo> _favoriteRecords = [];
+  List<RecordInfo> _historyRecords = [];
 
   RecordHelper._internal();
 
@@ -17,9 +18,12 @@ class RecordHelper extends ChangeNotifier {
     return _instance;
   }
 
-  Future<void> callUpdate() async {
+  Future<void> callUpdate({String createAt = ''}) async {
     await getRecords();
     await getFavoriteRecords();
+    if (createAt.isNotEmpty) {
+      await getRecordsByDate(DateTime.parse(createAt));
+    }
   }
 
   // Get record by id
@@ -87,7 +91,9 @@ class RecordHelper extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<RecordInfo>> getRecordsByDate(DateTime conditionDate) async {
+  List<RecordInfo> get favoriteRecords => _favoriteRecords;
+
+  Future<void> getRecordsByDate(DateTime conditionDate) async {
     final db = await DatabaseHelper().database;
     String formattedConditionDate =
         DateFormat('yyyyMMdd').format(conditionDate);
@@ -96,7 +102,7 @@ class RecordHelper extends ChangeNotifier {
   SELECT * FROM records
     WHERE strftime('%Y%m%d', createAt) = ? AND isDelete = 0 Order By createAt DESC, id DESC
 ''', [formattedConditionDate]);
-    return List.generate(maps.length, (i) {
+    _historyRecords = List.generate(maps.length, (i) {
       return RecordInfo(
         id: maps[i]['id'],
         title: maps[i]['title'],
@@ -108,9 +114,10 @@ class RecordHelper extends ChangeNotifier {
         replyCount: maps[i]['replyCount'],
       );
     });
+    notifyListeners();
   }
 
-  List<RecordInfo> get favoriteRecords => _favoriteRecords;
+  List<RecordInfo> get historyRecords => _historyRecords;
 
   // Insert record
   Future<void> insertRecord(RecordInfo record) async {
@@ -150,7 +157,7 @@ class RecordHelper extends ChangeNotifier {
       whereArgs: [record.id],
     );
 
-    await callUpdate();
+    await callUpdate(createAt: record.createAt);
     await ContributionHelper()
         .addOrUpdateContribution(DateTime.parse(record.createAt), 'update');
   }
