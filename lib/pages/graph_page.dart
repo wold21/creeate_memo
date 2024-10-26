@@ -1,10 +1,13 @@
+import 'package:create_author/components/calender.dart';
+import 'package:create_author/components/record/record_tile_mini.dart';
 import 'package:create_author/databases/contribution/contribution_helper.dart';
+import 'package:create_author/databases/record/record_helper.dart';
 import 'package:create_author/models/record.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 
 class GraphPage extends StatefulWidget {
-  const GraphPage({super.key});
+  final ScrollController scrollController;
+  const GraphPage({super.key, required this.scrollController});
 
   @override
   State<GraphPage> createState() => _GraphPageState();
@@ -18,6 +21,7 @@ class _GraphPageState extends State<GraphPage> {
   void initState() {
     super.initState();
     getContributions();
+    getRecords(DateTime.now());
   }
 
   Future<void> getContributions() async {
@@ -28,13 +32,20 @@ class _GraphPageState extends State<GraphPage> {
     });
   }
 
+  Future<void> getRecords(DateTime date) async {
+    List<RecordInfo> records = await RecordHelper().getRecordsByDate(date);
+    setState(() {
+      _records = records;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 25.0),
+            padding: EdgeInsets.only(top: 20, left: 20, right: 20),
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -46,36 +57,31 @@ class _GraphPageState extends State<GraphPage> {
               ),
             ),
           ),
-          HeatMapCalendar(
-            defaultColor: Colors.black,
-            flexible: false,
-            datasets: contributionData,
-            showColorTip: false,
-            weekTextColor: Color(0xffF0EFEB),
-            textColor: Color(0xffF0EFEB),
-            margin: EdgeInsets.all(5),
-            colorsets: const {
-              1: Colors.teal,
-            },
-            onClick: (value) {},
-          ),
-          _records.isEmpty
-              ? Expanded(
-                  child: Center(
-                    child: Text(
-                      'No colored date...',
-                      style: TextStyle(color: Color(0xFF4D4D4D), fontSize: 18),
-                    ),
-                  ),
-                )
-              : Expanded(
-                  child: Center(
-                    child: Text(
-                      'Select a colored date',
-                      style: TextStyle(color: Color(0xFF4D4D4D), fontSize: 18),
-                    ),
-                  ),
-                )
+          HistoryCalendar(
+              contributionData: contributionData,
+              onClick: (value) {
+                getRecords(value);
+              },
+              onMonthChange: (value) {
+                getRecords(value);
+              }),
+          if (_records.isEmpty)
+            Center(
+              child: Text(
+                'No records',
+                style: TextStyle(color: Color(0xFF4D4D4D), fontSize: 18),
+              ),
+            )
+          else
+            Expanded(
+              child: ListView.builder(
+                  controller: widget.scrollController,
+                  physics: AlwaysScrollableScrollPhysics(),
+                  itemCount: _records.length,
+                  itemBuilder: (context, index) {
+                    return RecordTileMini(record: _records[index]);
+                  }),
+            ),
         ],
       ),
     );

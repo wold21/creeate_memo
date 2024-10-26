@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
                     },
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                          vertical: 15.0, horizontal: 20.0),
+                          vertical: 20.0, horizontal: 25.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.end,

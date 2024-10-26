@@ -2,6 +2,7 @@ import 'package:create_author/databases/contribution/contribution_helper.dart';
 import 'package:create_author/databases/database_helper.dart';
 import 'package:create_author/models/record.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 
 class RecordHelper extends ChangeNotifier {
@@ -86,6 +87,29 @@ class RecordHelper extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<List<RecordInfo>> getRecordsByDate(DateTime conditionDate) async {
+    final db = await DatabaseHelper().database;
+    String formattedConditionDate =
+        DateFormat('yyyyMMdd').format(conditionDate);
+
+    final List<Map<String, dynamic>> maps = await db.rawQuery('''
+  SELECT * FROM records
+    WHERE strftime('%Y%m%d', createAt) = ? Order By createAt DESC, id DESC
+''', [formattedConditionDate]);
+    return List.generate(maps.length, (i) {
+      return RecordInfo(
+        id: maps[i]['id'],
+        title: maps[i]['title'],
+        description: maps[i]['description'],
+        createAt: maps[i]['createAt'],
+        updateAt: maps[i]['updateAt'],
+        isDelete: maps[i]['isDelete'] == 1,
+        isFavorite: maps[i]['isFavorite'] == 1,
+        replyCount: maps[i]['replyCount'],
+      );
+    });
+  }
+
   List<RecordInfo> get favoriteRecords => _favoriteRecords;
 
   // Insert record
@@ -145,7 +169,7 @@ class RecordHelper extends ChangeNotifier {
 
       await callUpdate();
       await ContributionHelper()
-          .addOrUpdateContribution(DateTime.parse(record!.createAt), 'delete');
+          .addOrUpdateContribution(DateTime.parse(record.createAt), 'delete');
     } else {
       throw Exception('Record not found');
     }

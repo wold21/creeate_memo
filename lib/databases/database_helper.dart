@@ -27,7 +27,10 @@ class DatabaseHelper extends ChangeNotifier {
   // Database initialization
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'record.db');
-    await deleteDatabase(path);
+
+    // remove database for testing
+    // await deleteDatabase(path);
+
     return await openDatabase(
       path,
       version: 1,

@@ -53,18 +53,18 @@ class _RecordTileState extends State<RecordTile> {
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Column(
                       children: [
-                        ContextMenu(
-                          title: 'Edit',
-                          icon: Icons.edit,
-                          textColor: Color(0xFFC8C8C8),
-                          iconColor: Color(0xFFC8C8C8),
-                          onTap: () {
-                            final scaffoldPageState = context
-                                .findAncestorStateOfType<ScaffoldPageState>();
-                            scaffoldPageState?.showInputSheet();
-                          },
-                        ),
-                        Divider(color: Color(0xFF4D4D4D)),
+                        // ContextMenu(
+                        //   title: 'Edit',
+                        //   icon: Icons.edit,
+                        //   textColor: Color(0xFFC8C8C8),
+                        //   iconColor: Color(0xFFC8C8C8),
+                        //   onTap: () {
+                        //     final scaffoldPageState = context
+                        //         .findAncestorStateOfType<ScaffoldPageState>();
+                        //     scaffoldPageState?.showInputSheet();
+                        //   },
+                        // ),
+                        // Divider(color: Color(0xFF4D4D4D)),
                         ContextMenu(
                           title: 'Delete',
                           icon: Icons.delete_forever_rounded,
@@ -96,8 +96,8 @@ class _RecordTileState extends State<RecordTile> {
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
-            width: 1,
-            color: Color(0xff4D4D4D),
+            width: 2,
+            color: Color(0xFF42403F),
           ),
           borderRadius: BorderRadius.circular(12),
         ),
