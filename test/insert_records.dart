@@ -9,9 +9,10 @@ void main() {
 
   Future<void> insertRandomRecords(Database db) async {
     final random = Random();
-    for (int i = 0; i < 50; i++) {
+    for (int i = 0; i < 1000; i++) {
       int randomDay = random.nextInt(31) + 1;
-      DateTime randomDate = DateTime(2024, 10, randomDay); // DateTime 형식으로 변환
+      int randomMonth = random.nextInt(12) + 1;
+      DateTime randomDate = DateTime(2024, randomMonth, randomDay);
 
       await db.insert(
         'records',
@@ -23,24 +24,22 @@ void main() {
         },
         conflictAlgorithm: ConflictAlgorithm.ignore,
       );
-      await ContributionHelper()
-          .addOrUpdateContribution(DateTime(2024, 10, randomDay), 'create');
+      await ContributionHelper().addOrUpdateContribution(
+          DateTime(2024, randomMonth, randomDay), 'create');
+      await Future.delayed(Duration(milliseconds: 10));
     }
   }
 
   test('insert random records into existing db', () async {
-    // 기존 DB 열기
     String path = join(await getDatabasesPath(), 'record.db');
     final db = await openDatabase(path);
+    try {
+      await insertRandomRecords(db);
 
-    // 50개 레코드 삽입
-    await insertRandomRecords(db);
-
-    // 레코드 삽입 후 레코드 수를 확인하거나 필요한 추가 검증 수행
-    final List<Map<String, dynamic>> records = await db.query('records');
-    print('Total records: ${records.length}'); // 테스트 확인용 출력
-
-    // 데이터베이스 닫기
-    await db.close();
-  });
+      final List<Map<String, dynamic>> records = await db.query('records');
+      print('Total records: ${records.length}');
+    } finally {
+      await db.close();
+    }
+  }, timeout: Timeout(Duration(minutes: 5)));
 }
