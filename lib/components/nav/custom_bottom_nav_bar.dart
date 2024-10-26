@@ -29,11 +29,21 @@ class CustomBottomNavBar extends StatelessWidget {
             icon: Icons.star_border_sharp,
             isActive: currentIndex == 1,
           ),
-          CustomNavItem(
-            index: -1,
-            icon: Icons.add_box_outlined,
-            onTap: onTap,
-            isActive: currentIndex == -1,
+          Container(
+            decoration: BoxDecoration(
+              color: Color.fromARGB(99, 45, 43, 41),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
+              child: CustomNavItem(
+                index: -1,
+                icon: Icons.add_box_outlined,
+                onTap: onTap,
+                isActive: currentIndex == -1,
+              ),
+            ),
           ),
           CustomNavItem(
             index: 2,

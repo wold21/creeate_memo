@@ -6,6 +6,7 @@ import 'package:create_author/pages/favorite_page.dart';
 import 'package:create_author/pages/graph_page.dart';
 import 'package:create_author/pages/home_page.dart';
 import 'package:create_author/pages/settings_page.dart';
+import 'package:create_author/utils/vibrator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -59,6 +60,7 @@ class ScaffoldPageState extends State<ScaffoldPage> {
 
   void _onItemTapped(int index) {
     if (index == -1) {
+      callVibration();
       showInputSheet();
     } else {
       setState(() {

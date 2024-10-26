@@ -17,7 +17,8 @@ void main() {
         'records',
         {
           'title': 'test$i',
-          'description': 'testDesc$i',
+          'description':
+              'testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i testDesc$i',
           'createAt': randomDate.toIso8601String(),
         },
         conflictAlgorithm: ConflictAlgorithm.ignore,

@@ -1,8 +1,10 @@
 import 'package:create_author/components/calender.dart';
+import 'package:create_author/components/record/record_detail.dart';
 import 'package:create_author/components/record/record_tile_mini.dart';
 import 'package:create_author/databases/contribution/contribution_helper.dart';
 import 'package:create_author/databases/record/record_helper.dart';
 import 'package:create_author/models/record.dart';
+import 'package:create_author/utils/vibrator.dart';
 import 'package:flutter/material.dart';
 
 class GraphPage extends StatefulWidget {
@@ -60,9 +62,11 @@ class _GraphPageState extends State<GraphPage> {
           HistoryCalendar(
               contributionData: contributionData,
               onClick: (value) {
+                callVibration();
                 getRecords(value);
               },
               onMonthChange: (value) {
+                callVibration();
                 getRecords(value);
               }),
           if (_records.isEmpty)
@@ -79,7 +83,17 @@ class _GraphPageState extends State<GraphPage> {
                   physics: AlwaysScrollableScrollPhysics(),
                   itemCount: _records.length,
                   itemBuilder: (context, index) {
-                    return RecordTileMini(record: _records[index]);
+                    return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  RecordDetail(record: _records[index]),
+                            ),
+                          );
+                        },
+                        child: RecordTileMini(record: _records[index]));
                   }),
             ),
         ],
