@@ -5,6 +5,7 @@ import 'package:create_author/models/record.dart';
 import 'package:create_author/pages/favorite_page.dart';
 import 'package:create_author/pages/graph_page.dart';
 import 'package:create_author/pages/home_page.dart';
+import 'package:create_author/pages/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -46,6 +47,7 @@ class ScaffoldPageState extends State<ScaffoldPage> {
       HomePage(scrollController: _scrollController),
       FavoritePage(scrollController: _scrollController),
       GraphPage(scrollController: _scrollController),
+      SettingsPage()
     ];
   }
 

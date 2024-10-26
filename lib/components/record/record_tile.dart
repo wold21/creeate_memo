@@ -1,7 +1,6 @@
 import 'package:create_author/components/context_menu.dart';
 import 'package:create_author/databases/record/record_helper.dart';
 import 'package:create_author/models/record.dart';
-import 'package:create_author/pages/scaffold_page.dart';
 import 'package:create_author/utils/date.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
