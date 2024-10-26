@@ -25,6 +25,8 @@ class _RecordDetailState extends State<RecordDetail> {
     _titleController = TextEditingController(text: widget.record.title);
     _descriptionController =
         TextEditingController(text: widget.record.description);
+    _title = widget.record.title;
+    _description = widget.record.description;
   }
 
   @override
