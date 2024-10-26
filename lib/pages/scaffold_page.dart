@@ -5,7 +5,6 @@ import 'package:create_author/models/record.dart';
 import 'package:create_author/pages/favorite_page.dart';
 import 'package:create_author/pages/graph_page.dart';
 import 'package:create_author/pages/home_page.dart';
-import 'package:create_author/pages/settings_page.dart';
 import 'package:create_author/utils/vibrator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
