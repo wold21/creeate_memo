@@ -14,14 +14,15 @@ class CustomNavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        onTap(index);
-      },
-      child: Icon(
-        icon,
-        color: isActive ? Color(0xffF0EFEB) : Color.fromARGB(255, 72, 72, 72),
-        size: 25,
+    return InkWell(
+      onTap: () => onTap(index),
+      child: Container(
+        padding: const EdgeInsets.all(5),
+        child: Icon(
+          icon,
+          size: 25,
+          color: isActive ? Colors.white : Colors.grey,
+        ),
       ),
     );
   }

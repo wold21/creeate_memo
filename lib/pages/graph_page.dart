@@ -45,33 +45,33 @@ class _GraphPageState extends State<GraphPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Activity Log',
-                  style: TextStyle(
-                      color: Color(0xffF0EFEB),
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Activity Log',
+                style: TextStyle(
+                    color: Color(0xffF0EFEB),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
               ),
             ),
-            HistoryCalendar(
-                contributionData: contributionData,
-                onClick: (value) {
-                  callVibration();
-                  getRecords(value);
-                },
-                onMonthChange: (value) {
-                  callVibration();
-                  getRecords(value);
-                }),
-            Consumer<RecordHelper>(
+          ),
+          HistoryCalendar(
+              contributionData: contributionData,
+              onClick: (value) {
+                callVibration();
+                getRecords(value);
+              },
+              onMonthChange: (value) {
+                callVibration();
+                getRecords(value);
+              }),
+          Expanded(
+            child: Consumer<RecordHelper>(
               builder: (context, value, child) {
                 final records = value.historyRecords;
                 if (records.isEmpty) {
@@ -83,7 +83,7 @@ class _GraphPageState extends State<GraphPage> {
                   return ListView.builder(
                       controller: widget.scrollController,
                       shrinkWrap: true,
-                      physics: AlwaysScrollableScrollPhysics(),
+                      // physics: NeverScrollableScrollPhysics(),
                       itemCount: records.length,
                       itemBuilder: (context, index) {
                         return GestureDetector(
@@ -100,9 +100,9 @@ class _GraphPageState extends State<GraphPage> {
                       });
                 }
               },
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }
