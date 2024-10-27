@@ -19,8 +19,22 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<RecordHelper>(context, listen: false).getRecords();
+      Provider.of<RecordHelper>(context, listen: false).getRecordsPage();
     });
+    widget.scrollController.addListener(_scrollListener);
+  }
+
+  void _scrollListener() {
+    if (widget.scrollController.position.pixels ==
+        widget.scrollController.position.maxScrollExtent) {
+      Provider.of<RecordHelper>(context, listen: false).getRecordsPage();
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.scrollController.removeListener(_scrollListener);
+    super.dispose();
   }
 
   @override
@@ -92,12 +106,14 @@ class _HomePageState extends State<HomePage> {
                           ],
                         );
                       } else {
-                        return ListView.builder(
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: records.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
+                        return Column(
+                          children: [
+                            ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: records.length,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
                                   onTap: () {
                                     Navigator.push(
                                       context,
@@ -107,8 +123,18 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     );
                                   },
-                                  child: RecordTile(records: records[index]));
-                            });
+                                  child: RecordTile(records: records[index]),
+                                );
+                              },
+                            ),
+                            if (recordHelper.isLoading)
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16.0),
+                                child: CircularProgressIndicator(),
+                              ),
+                          ],
+                        );
                       }
                     },
                   )

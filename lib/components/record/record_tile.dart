@@ -177,7 +177,7 @@ class _RecordTileState extends State<RecordTile> {
                               .toggleFavorite(widget.records.id);
                         },
                         child: Icon(
-                            widget.records.isFavorite
+                            widget.records.isFavorite == 1
                                 ? Icons.star_outlined
                                 : Icons.star_outline_outlined,
                             size: 22,

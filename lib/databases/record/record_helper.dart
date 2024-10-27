@@ -8,6 +8,10 @@ import 'package:sqflite/sqflite.dart';
 class RecordHelper extends ChangeNotifier {
   static final RecordHelper _instance = RecordHelper._internal();
 
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+  int _page = 1;
+  final int limit = 15;
   List<RecordInfo> _allRecords = [];
   List<RecordInfo> _favoriteRecords = [];
   List<RecordInfo> _historyRecords = [];
@@ -19,7 +23,7 @@ class RecordHelper extends ChangeNotifier {
   }
 
   Future<void> callUpdate({String createAt = ''}) async {
-    await getRecords();
+    // await getRecords();
     await getFavoriteRecords();
     if (createAt.isNotEmpty) {
       await getRecordsByDate(DateTime.parse(createAt));
@@ -38,8 +42,8 @@ class RecordHelper extends ChangeNotifier {
         description: maps.first['description'],
         createAt: maps.first['createAt'],
         updateAt: maps.first['updateAt'],
-        isDelete: maps.first['isDelete'] == 1,
-        isFavorite: maps.first['isFavorite'] == 1,
+        isDelete: maps.first['isDelete'],
+        isFavorite: maps.first['isFavorite'],
         replyCount: maps.first['replyCount'],
       );
     } else {
@@ -59,12 +63,66 @@ class RecordHelper extends ChangeNotifier {
         description: maps[i]['description'],
         createAt: maps[i]['createAt'],
         updateAt: maps[i]['updateAt'],
-        isDelete: maps[i]['isDelete'] == 1,
-        isFavorite: maps[i]['isFavorite'] == 1,
+        isDelete: maps[i]['isDelete'],
+        isFavorite: maps[i]['isFavorite'],
         replyCount: maps[i]['replyCount'],
       );
     });
 
+    notifyListeners();
+  }
+
+  Future<void> getRecordsPage({bool refresh = false}) async {
+    if (_isLoading) return;
+
+    _isLoading = true;
+
+    final offset = refresh ? 0 : (_page - 1) * limit;
+    final db = await DatabaseHelper().database;
+
+    final List<Map<String, dynamic>> maps = await db.query('records',
+        where: 'isDelete = 0',
+        orderBy: 'createAt DESC',
+        limit: limit,
+        offset: offset);
+
+    if (refresh) {
+      _allRecords = maps
+          .map((map) => RecordInfo(
+                id: map['id'],
+                title: map['title'],
+                description: map['description'],
+                createAt: map['createAt'],
+                updateAt: map['updateAt'],
+                isDelete: map['isDelete'],
+                isFavorite: map['isFavorite'],
+                replyCount: map['replyCount'],
+              ))
+          .toList();
+      _page = 1;
+    } else {
+      final newRecords = maps
+          .map((map) => RecordInfo(
+                id: map['id'],
+                title: map['title'],
+                description: map['description'],
+                createAt: map['createAt'],
+                updateAt: map['updateAt'],
+                isDelete: map['isDelete'],
+                isFavorite: map['isFavorite'],
+                replyCount: map['replyCount'],
+              ))
+          .toList();
+
+      if (newRecords.isNotEmpty) {
+        _allRecords.addAll(newRecords);
+        _page++;
+      } else {
+        _isLoading = false;
+        return;
+      }
+    }
+    _isLoading = false;
     notifyListeners();
   }
 
@@ -82,8 +140,8 @@ class RecordHelper extends ChangeNotifier {
         description: maps[i]['description'],
         createAt: maps[i]['createAt'],
         updateAt: maps[i]['updateAt'],
-        isDelete: maps[i]['isDelete'] == 1,
-        isFavorite: maps[i]['isFavorite'] == 1,
+        isDelete: maps[i]['isDelete'],
+        isFavorite: maps[i]['isFavorite'],
         replyCount: maps[i]['replyCount'],
       );
     });
@@ -109,8 +167,8 @@ class RecordHelper extends ChangeNotifier {
         description: maps[i]['description'],
         createAt: maps[i]['createAt'],
         updateAt: maps[i]['updateAt'],
-        isDelete: maps[i]['isDelete'] == 1,
-        isFavorite: maps[i]['isFavorite'] == 1,
+        isDelete: maps[i]['isDelete'],
+        isFavorite: maps[i]['isFavorite'],
         replyCount: maps[i]['replyCount'],
       );
     });
@@ -136,13 +194,20 @@ class RecordHelper extends ChangeNotifier {
   // Toggle favorite
   Future<void> toggleFavorite(int id) async {
     final db = await DatabaseHelper().database;
-    final record = _allRecords.firstWhere((element) => element.id == id);
+    final recordIndex = _allRecords.indexWhere((element) => element.id == id);
+    if (recordIndex == -1) return;
+
+    final record = _allRecords[recordIndex];
+    final isFavorite = record.isFavorite == 1 ? 0 : 1;
     await db.update(
       'records',
-      {'isFavorite': record.isFavorite ? 0 : 1},
+      {'isFavorite': isFavorite},
       where: 'id = ?',
       whereArgs: [id],
     );
+
+    _allRecords[recordIndex] =
+        _allRecords[recordIndex].copyWith(isFavorite: isFavorite);
 
     await callUpdate();
   }
@@ -157,7 +222,14 @@ class RecordHelper extends ChangeNotifier {
       whereArgs: [record.id],
     );
 
-    await callUpdate(createAt: record.createAt);
+    final recordIndex =
+        _allRecords.indexWhere((element) => element.id == record.id);
+    if (recordIndex != -1) {
+      _allRecords[recordIndex] =
+          record.copyWith(); // 필요한 경우 copyWith 메서드를 사용해 변경
+    }
+
+    // await callUpdate(createAt: record.createAt);
     await ContributionHelper()
         .addOrUpdateContribution(DateTime.parse(record.createAt), 'update');
   }
