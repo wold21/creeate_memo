@@ -34,9 +34,9 @@ class RecordInfo {
     required this.title,
     required this.description,
     required this.createAt,
+    required this.isFavorite,
   })  : updateAt = DateTime.now().toIso8601String(),
         isDelete = 0,
-        isFavorite = 0,
         replyCount = 0;
 
   factory RecordInfo.fromMap(Map<String, dynamic> map) {

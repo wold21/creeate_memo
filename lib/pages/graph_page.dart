@@ -82,7 +82,7 @@ class _GraphPageState extends State<GraphPage> {
                 } else {
                   return ListView.builder(
                       controller: widget.scrollController,
-                      shrinkWrap: true,
+                      // shrinkWrap: true,
                       // physics: NeverScrollableScrollPhysics(),
                       itemCount: records.length,
                       itemBuilder: (context, index) {

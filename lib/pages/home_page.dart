@@ -1,3 +1,4 @@
+import 'package:create_author/components/indicator/indicator.dart';
 import 'package:create_author/components/record/record_detail.dart';
 import 'package:create_author/components/record/record_tile.dart';
 import 'package:create_author/databases/record/record_helper.dart';
@@ -14,6 +15,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  OverlayEntry? _overlayEntry;
+
   @override
   void initState() {
     super.initState();
@@ -31,9 +34,30 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void showOverlay(BuildContext context) {
+    if (_overlayEntry == null) {
+      _overlayEntry = OverlayEntry(
+        builder: (context) => Positioned.fill(
+          child: Container(
+            color: Colors.black.withOpacity(0.5),
+            child: Center(child: BouncingDotsIndicator()),
+          ),
+        ),
+      );
+
+      Overlay.of(context).insert(_overlayEntry!);
+    }
+  }
+
+  void hideOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
   @override
   void dispose() {
     widget.scrollController.removeListener(_scrollListener);
+    hideOverlay();
     super.dispose();
   }
 
@@ -92,6 +116,13 @@ class _HomePageState extends State<HomePage> {
                   Consumer<RecordHelper>(
                     builder: (context, recordHelper, child) {
                       final records = recordHelper.allRecords;
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (recordHelper.isLoading) {
+                          showOverlay(context);
+                        } else {
+                          hideOverlay();
+                        }
+                      });
                       if (records.isEmpty) {
                         return Column(
                           children: [
@@ -106,7 +137,7 @@ class _HomePageState extends State<HomePage> {
                           ],
                         );
                       } else {
-                        return Column(
+                        return Stack(
                           children: [
                             ListView.builder(
                               physics: NeverScrollableScrollPhysics(),
@@ -127,12 +158,6 @@ class _HomePageState extends State<HomePage> {
                                 );
                               },
                             ),
-                            if (recordHelper.isLoading)
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 16.0),
-                                child: CircularProgressIndicator(),
-                              ),
                           ],
                         );
                       }

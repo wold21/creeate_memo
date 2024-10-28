@@ -42,6 +42,7 @@ class _RecordDetailState extends State<RecordDetail> {
       title: _title,
       description: _description,
       createAt: widget.record.createAt,
+      isFavorite: widget.record.isFavorite,
     );
     Provider.of<RecordHelper>(context, listen: false).updateRecord(record);
   }
@@ -50,8 +51,16 @@ class _RecordDetailState extends State<RecordDetail> {
     if (isSaved) {
       _saveRecord();
     }
-    FocusScope.of(context).unfocus();
-    Navigator.pop(context);
+    if (MediaQuery.of(context).viewInsets.bottom > 0) {
+      FocusScope.of(context).unfocus();
+    } else {
+      Navigator.pop(context);
+    }
+  }
+
+  bool get _isFormValid {
+    return _titleController.text.trim().isNotEmpty &&
+        _descriptionController.text.trim().isNotEmpty;
   }
 
   @override
@@ -91,13 +100,17 @@ class _RecordDetailState extends State<RecordDetail> {
                           child: Text('Back')),
                       ElevatedButton(
                           onPressed: () {
-                            _closePop(true);
+                            _isFormValid ? _closePop(true) : null;
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xffF0EFEB),
+                            backgroundColor: _isFormValid
+                                ? Color(0xffF0EFEB)
+                                : Colors.grey[700],
                             foregroundColor: Color(0xff1A1918),
                             textStyle: TextStyle(
-                                color: Color(0xff1A1918),
+                                color: _isFormValid
+                                    ? Color(0xff1A1918)
+                                    : Color.fromARGB(255, 68, 68, 68),
                                 fontWeight: FontWeight.bold),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -120,14 +133,14 @@ class _RecordDetailState extends State<RecordDetail> {
                           decoration: InputDecoration(
                             hintText: 'Title',
                             hintStyle: TextStyle(
-                                color: Color(0xffF0EFEB),
-                                fontSize: 25,
+                                color: Color(0xFF4D4D4D),
+                                fontSize: 23,
                                 fontWeight: FontWeight.bold),
                             border: InputBorder.none,
                           ),
                           style: TextStyle(
                               color: Color(0xffF0EFEB),
-                              fontSize: 25,
+                              fontSize: 23,
                               fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -144,29 +157,31 @@ class _RecordDetailState extends State<RecordDetail> {
                     ],
                   ),
                   Expanded(
-                    child: TextField(
-                      controller: _descriptionController,
-                      onChanged: (value) {
-                        setState(() {
-                          _description = value;
-                        });
-                      },
-                      decoration: InputDecoration(
-                        hintText: 'Description',
-                        hintStyle: TextStyle(
+                    child: ListView(children: [
+                      TextField(
+                        controller: _descriptionController,
+                        onChanged: (value) {
+                          setState(() {
+                            _description = value;
+                          });
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'What\'s new',
+                          hintStyle: TextStyle(
+                              color: Color(0xFF4D4D4D),
+                              fontSize: 15,
+                              fontWeight: FontWeight.w300),
+                          border: InputBorder.none,
+                        ),
+                        style: TextStyle(
                             color: Color(0xffF0EFEB),
                             fontSize: 15,
                             fontWeight: FontWeight.w300),
-                        border: InputBorder.none,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        textInputAction: TextInputAction.newline,
                       ),
-                      style: TextStyle(
-                          color: Color(0xffF0EFEB),
-                          fontSize: 15,
-                          fontWeight: FontWeight.w300),
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      textInputAction: TextInputAction.newline,
-                    ),
+                    ]),
                   ),
                 ],
               ),

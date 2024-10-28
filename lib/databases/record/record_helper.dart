@@ -10,8 +10,10 @@ class RecordHelper extends ChangeNotifier {
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
-  int _page = 1;
-  final int limit = 15;
+  int _recordPage = 1;
+  int _favoritePage = 1;
+  final int limit = 10;
+
   List<RecordInfo> _allRecords = [];
   List<RecordInfo> _favoriteRecords = [];
   List<RecordInfo> _historyRecords = [];
@@ -76,8 +78,9 @@ class RecordHelper extends ChangeNotifier {
     if (_isLoading) return;
 
     _isLoading = true;
+    notifyListeners();
 
-    final offset = refresh ? 0 : (_page - 1) * limit;
+    final offset = refresh ? 0 : (_recordPage - 1) * limit;
     final db = await DatabaseHelper().database;
 
     final List<Map<String, dynamic>> maps = await db.query('records',
@@ -99,7 +102,7 @@ class RecordHelper extends ChangeNotifier {
                 replyCount: map['replyCount'],
               ))
           .toList();
-      _page = 1;
+      _recordPage = 1;
     } else {
       final newRecords = maps
           .map((map) => RecordInfo(
@@ -116,12 +119,10 @@ class RecordHelper extends ChangeNotifier {
 
       if (newRecords.isNotEmpty) {
         _allRecords.addAll(newRecords);
-        _page++;
-      } else {
-        _isLoading = false;
-        return;
+        _recordPage++;
       }
     }
+
     _isLoading = false;
     notifyListeners();
   }
@@ -150,6 +151,60 @@ class RecordHelper extends ChangeNotifier {
   }
 
   List<RecordInfo> get favoriteRecords => _favoriteRecords;
+
+  /// 추후에 페이징 필요할 경우 사용
+  // Future<void> getFavoriteRecordsPage({bool refresh = false}) async {
+  //   if (_isLoading) return;
+
+  //   _isLoading = true;
+  //   notifyListeners();
+
+  //   final offset = refresh ? 0 : (_favoritePage - 1) * limit;
+  //   final db = await DatabaseHelper().database;
+
+  //   final List<Map<String, dynamic>> maps = await db.query('records',
+  //       where: 'isDelete = 0 AND isFavorite = 1',
+  //       orderBy: 'createAt DESC',
+  //       limit: limit,
+  //       offset: offset);
+
+  //   if (refresh) {
+  //     _favoriteRecords = maps
+  //         .map((map) => RecordInfo(
+  //               id: map['id'],
+  //               title: map['title'],
+  //               description: map['description'],
+  //               createAt: map['createAt'],
+  //               updateAt: map['updateAt'],
+  //               isDelete: map['isDelete'],
+  //               isFavorite: map['isFavorite'],
+  //               replyCount: map['replyCount'],
+  //             ))
+  //         .toList();
+  //     _favoritePage = 1;
+  //   } else {
+  //     final newRecords = maps
+  //         .map((map) => RecordInfo(
+  //               id: map['id'],
+  //               title: map['title'],
+  //               description: map['description'],
+  //               createAt: map['createAt'],
+  //               updateAt: map['updateAt'],
+  //               isDelete: map['isDelete'],
+  //               isFavorite: map['isFavorite'],
+  //               replyCount: map['replyCount'],
+  //             ))
+  //         .toList();
+
+  //     if (newRecords.isNotEmpty) {
+  //       _favoriteRecords.addAll(newRecords);
+  //       _favoritePage++;
+  //     }
+  //   }
+
+  //   _isLoading = false;
+  //   notifyListeners();
+  // }
 
   Future<void> getRecordsByDate(DateTime conditionDate) async {
     final db = await DatabaseHelper().database;
@@ -209,6 +264,7 @@ class RecordHelper extends ChangeNotifier {
     _allRecords[recordIndex] =
         _allRecords[recordIndex].copyWith(isFavorite: isFavorite);
 
+    notifyListeners();
     await callUpdate();
   }
 
@@ -225,13 +281,13 @@ class RecordHelper extends ChangeNotifier {
     final recordIndex =
         _allRecords.indexWhere((element) => element.id == record.id);
     if (recordIndex != -1) {
-      _allRecords[recordIndex] =
-          record.copyWith(); // 필요한 경우 copyWith 메서드를 사용해 변경
+      _allRecords[recordIndex] = record.copyWith();
     }
 
-    // await callUpdate(createAt: record.createAt);
+    await callUpdate(createAt: record.createAt);
     await ContributionHelper()
         .addOrUpdateContribution(DateTime.parse(record.createAt), 'update');
+    notifyListeners();
   }
 
   // Delete record
@@ -249,8 +305,11 @@ class RecordHelper extends ChangeNotifier {
       await callUpdate();
       await ContributionHelper()
           .addOrUpdateContribution(DateTime.parse(record.createAt), 'delete');
+
+      _allRecords.removeWhere((element) => element.id == id);
     } else {
       throw Exception('Record not found');
     }
+    notifyListeners();
   }
 }
