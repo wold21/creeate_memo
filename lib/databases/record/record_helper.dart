@@ -11,8 +11,8 @@ class RecordHelper extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   int _recordPage = 1;
-  int _favoritePage = 1;
-  final int limit = 10;
+  // int _favoritePage = 1;
+  final int limit = 50;
 
   List<RecordInfo> _allRecords = [];
   List<RecordInfo> _favoriteRecords = [];
