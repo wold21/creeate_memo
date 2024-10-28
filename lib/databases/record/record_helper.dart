@@ -235,15 +235,20 @@ class RecordHelper extends ChangeNotifier {
   // Insert record
   Future<void> insertRecord(RecordInfo record) async {
     final db = await DatabaseHelper().database;
-    await db.insert(
+    final int = await db.insert(
       'records',
       record.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
+    final newRecord = await getRecordById(int);
+
     await callUpdate();
     await ContributionHelper()
         .addOrUpdateContribution(DateTime.parse(record.createAt), 'create');
+
+    _allRecords.insert(0, newRecord!);
+    notifyListeners();
   }
 
   // Toggle favorite
