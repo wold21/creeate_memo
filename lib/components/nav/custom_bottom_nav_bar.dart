@@ -23,6 +23,12 @@ class CustomBottomNavBar extends StatelessWidget {
             icon: Icons.home_filled,
             isActive: currentIndex == 0,
           ),
+          CustomNavItem(
+            index: 1,
+            onTap: onTap,
+            icon: Icons.star_border_sharp,
+            isActive: currentIndex == 1,
+          ),
           Container(
             decoration: BoxDecoration(
               color: Color.fromARGB(99, 45, 43, 41),
@@ -40,23 +46,17 @@ class CustomBottomNavBar extends StatelessWidget {
             ),
           ),
           CustomNavItem(
-            index: 1,
-            onTap: onTap,
-            icon: Icons.star_border_sharp,
-            isActive: currentIndex == 1,
-          ),
-          CustomNavItem(
             index: 2,
             onTap: onTap,
             icon: Icons.access_time_rounded,
             isActive: currentIndex == 2,
           ),
-          // CustomNavItem(
-          //   index: 3,
-          //   onTap: onTap,
-          //   icon: Icons.settings,
-          //   isActive: currentIndex == 3,
-          // ),
+          CustomNavItem(
+            index: 3,
+            onTap: onTap,
+            icon: Icons.settings,
+            isActive: currentIndex == 3,
+          ),
         ],
       ),
     );
