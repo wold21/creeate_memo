@@ -46,9 +46,16 @@ class ScaffoldPageState extends State<ScaffoldPage> {
     _pages = [
       HomePage(scrollController: _scrollController),
       FavoritePage(scrollController: _scrollController),
-      GraphPage(scrollController: _scrollController),
+      GraphPage(
+          scrollController: _scrollController, navCallback: _resetBottomNav),
       // SettingsPage()
     ];
+  }
+
+  void _resetBottomNav() {
+    setState(() {
+      _bottomNavPosition = 0;
+    });
   }
 
   @override

@@ -9,7 +9,9 @@ import 'package:provider/provider.dart';
 
 class GraphPage extends StatefulWidget {
   final ScrollController scrollController;
-  const GraphPage({super.key, required this.scrollController});
+  final Function navCallback;
+  const GraphPage(
+      {super.key, required this.scrollController, required this.navCallback});
 
   @override
   State<GraphPage> createState() => _GraphPageState();
@@ -42,6 +44,13 @@ class _GraphPageState extends State<GraphPage> {
     await RecordHelper().getRecordsByDate(date);
   }
 
+  void _changeDate(dynamic date) {
+    // nav position reset
+    widget.navCallback();
+    callVibration();
+    getRecords(date);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -63,21 +72,21 @@ class _GraphPageState extends State<GraphPage> {
           HistoryCalendar(
               contributionData: contributionData,
               onClick: (value) {
-                callVibration();
-                getRecords(value);
+                _changeDate(value);
               },
               onMonthChange: (value) {
-                callVibration();
-                getRecords(value);
+                _changeDate(value);
               }),
           Expanded(
             child: Consumer<RecordHelper>(
               builder: (context, value, child) {
                 final records = value.historyRecords;
                 if (records.isEmpty) {
-                  return Text(
-                    'No records',
-                    style: TextStyle(color: Color(0xFF4D4D4D), fontSize: 18),
+                  return Center(
+                    child: Text(
+                      'No records',
+                      style: TextStyle(color: Color(0xFF4D4D4D), fontSize: 18),
+                    ),
                   );
                 } else {
                   return ListView.builder(
