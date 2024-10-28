@@ -55,7 +55,7 @@ class _FavoritePageState extends State<FavoritePage> {
                               height: MediaQuery.of(context).size.height * 0.4,
                             ),
                             Center(
-                              child: Text('No favorite posts...',
+                              child: Text('No favorite records',
                                   style: TextStyle(
                                       color: Color(0xFF4D4D4D), fontSize: 18)),
                             ),

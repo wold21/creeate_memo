@@ -3,7 +3,6 @@ import 'package:create_author/components/record/record_detail.dart';
 import 'package:create_author/components/record/record_tile_mini.dart';
 import 'package:create_author/databases/contribution/contribution_helper.dart';
 import 'package:create_author/databases/record/record_helper.dart';
-import 'package:create_author/utils/vibrator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -47,7 +46,6 @@ class _GraphPageState extends State<GraphPage> {
   void _changeDate(dynamic date) {
     // nav position reset
     widget.navCallback();
-    callVibration();
     getRecords(date);
   }
 
