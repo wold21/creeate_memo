@@ -91,17 +91,18 @@ class _RecordTileState extends State<RecordTile> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+      // padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
             width: 2,
-            color: Color(0xFF42403F),
+            color: Color(0xFF272423),
           ),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15.0),
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
           child: Column(
             children: [
               Padding(
@@ -117,7 +118,7 @@ class _RecordTileState extends State<RecordTile> {
                           widget.records.title,
                           style: TextStyle(
                               color: Color(0xffF0EFEB),
-                              fontSize: 18,
+                              fontSize: 15,
                               fontWeight: FontWeight.bold),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -129,7 +130,7 @@ class _RecordTileState extends State<RecordTile> {
                           getDate(widget.records.createAt),
                           style: TextStyle(
                               color: Color(0xFF4D4D4D),
-                              fontSize: 12,
+                              fontSize: 11,
                               fontWeight: FontWeight.w300),
                         ),
                         const SizedBox(width: 5),
@@ -150,7 +151,7 @@ class _RecordTileState extends State<RecordTile> {
               ),
               Padding(
                 padding:
-                    const EdgeInsets.only(top: 5.0, left: 20.0, right: 20.0),
+                    const EdgeInsets.only(top: 3.0, left: 20.0, right: 20.0),
                 child: Row(
                   children: [
                     Expanded(
@@ -167,7 +168,7 @@ class _RecordTileState extends State<RecordTile> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 10.0, left: 20.0),
+                padding: const EdgeInsets.only(top: 5.0, left: 20.0),
                 child: Row(
                   children: [
                     Row(crossAxisAlignment: CrossAxisAlignment.end, children: [

@@ -28,7 +28,7 @@ class RecordTileMini extends StatelessWidget {
                   style: TextStyle(
                       color: Color(0xffF0EFEB),
                       fontSize: 15,
-                      fontWeight: FontWeight.bold),
+                      fontWeight: FontWeight.normal),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),

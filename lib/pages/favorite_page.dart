@@ -32,8 +32,8 @@ class _FavoritePageState extends State<FavoritePage> {
               child: Column(
                 children: [
                   Padding(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 20.0, horizontal: 25.0),
+                    padding: EdgeInsets.only(
+                        top: 20.0, bottom: 10.0, left: 25.0, right: 25.0),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -41,7 +41,7 @@ class _FavoritePageState extends State<FavoritePage> {
                         style: TextStyle(
                             color: Color(0xffF0EFEB),
                             fontSize: 20,
-                            fontWeight: FontWeight.bold),
+                            fontWeight: FontWeight.w600),
                       ),
                     ),
                   ),

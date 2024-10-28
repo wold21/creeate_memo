@@ -83,40 +83,42 @@ class _RecordDetailState extends State<RecordDetail> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ElevatedButton(
-                          onPressed: () {
-                            _closePop(false);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xffF0EFEB),
-                            foregroundColor: Color(0xff1A1918),
-                            textStyle: TextStyle(
-                                color: Color(0xff1A1918),
-                                fontWeight: FontWeight.bold),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                      TextButton(
+                        onPressed: () {
+                          _closePop(false);
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: Color(0xff1A1918),
+                          foregroundColor: Colors.white,
+                          textStyle: TextStyle(fontWeight: FontWeight.bold),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          child: Text('Back')),
-                      ElevatedButton(
-                          onPressed: () {
-                            _isFormValid ? _closePop(true) : null;
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: _isFormValid
-                                ? Color(0xffF0EFEB)
-                                : Colors.grey[700],
-                            foregroundColor: Color(0xff1A1918),
-                            textStyle: TextStyle(
-                                color: _isFormValid
-                                    ? Color(0xff1A1918)
-                                    : Color.fromARGB(255, 68, 68, 68),
-                                fontWeight: FontWeight.bold),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                        ),
+                        child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text('Back')),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          _isFormValid ? _closePop(true) : null;
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: Color(0xff1A1918),
+                          foregroundColor: _isFormValid
+                              ? Color(0xffF0EFEB)
+                              : Colors.grey[700],
+                          textStyle: TextStyle(
+                              color: _isFormValid
+                                  ? Color(0xff1A1918)
+                                  : Color(0xFF444444),
+                              fontWeight: FontWeight.bold),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          child: Text('Save')),
+                        ),
+                        child: Text('Save'),
+                      ),
                     ],
                   ),
                   Row(
@@ -134,13 +136,13 @@ class _RecordDetailState extends State<RecordDetail> {
                             hintText: 'Title',
                             hintStyle: TextStyle(
                                 color: Color(0xFF4D4D4D),
-                                fontSize: 23,
+                                fontSize: 20,
                                 fontWeight: FontWeight.bold),
                             border: InputBorder.none,
                           ),
                           style: TextStyle(
                               color: Color(0xffF0EFEB),
-                              fontSize: 23,
+                              fontSize: 20,
                               fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -150,38 +152,36 @@ class _RecordDetailState extends State<RecordDetail> {
                           getDate(widget.record.createAt),
                           style: TextStyle(
                               color: Color(0xFF4D4D4D),
-                              fontSize: 12,
+                              fontSize: 11,
                               fontWeight: FontWeight.w300),
                         ),
                       ),
                     ],
                   ),
                   Expanded(
-                    child: ListView(children: [
-                      TextField(
-                        controller: _descriptionController,
-                        onChanged: (value) {
-                          setState(() {
-                            _description = value;
-                          });
-                        },
-                        decoration: InputDecoration(
-                          hintText: 'What\'s new',
-                          hintStyle: TextStyle(
-                              color: Color(0xFF4D4D4D),
-                              fontSize: 15,
-                              fontWeight: FontWeight.w300),
-                          border: InputBorder.none,
-                        ),
-                        style: TextStyle(
-                            color: Color(0xffF0EFEB),
-                            fontSize: 15,
+                    child: TextField(
+                      controller: _descriptionController,
+                      onChanged: (value) {
+                        setState(() {
+                          _description = value;
+                        });
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'What\'s new',
+                        hintStyle: TextStyle(
+                            color: Color(0xFF4D4D4D),
+                            fontSize: 14,
                             fontWeight: FontWeight.w300),
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        textInputAction: TextInputAction.newline,
+                        border: InputBorder.none,
                       ),
-                    ]),
+                      style: TextStyle(
+                          color: Color(0xffF0EFEB),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w300),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      textInputAction: TextInputAction.newline,
+                    ),
                   ),
                 ],
               ),

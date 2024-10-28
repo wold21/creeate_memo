@@ -63,7 +63,7 @@ class _GraphPageState extends State<GraphPage> {
                 style: TextStyle(
                     color: Color(0xffF0EFEB),
                     fontSize: 20,
-                    fontWeight: FontWeight.bold),
+                    fontWeight: FontWeight.w600),
               ),
             ),
           ),

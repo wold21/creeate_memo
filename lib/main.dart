@@ -13,7 +13,8 @@ class CreateAnAuthor extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
+      // theme: ThemeData(),
+      theme: ThemeData(brightness: Brightness.dark, fontFamily: 'Maruburi'),
       home: ScaffoldPage(),
     );
   }

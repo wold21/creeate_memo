@@ -14,7 +14,7 @@ class HistoryCalendar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
       child: HeatMapCalendar(
         defaultColor: Colors.black,
         flexible: true,
@@ -22,6 +22,7 @@ class HistoryCalendar extends StatelessWidget {
         showColorTip: false,
         weekTextColor: Color(0xffF0EFEB),
         textColor: Color(0xffF0EFEB),
+        fontSize: 12,
         margin: EdgeInsets.all(5),
         colorsets: const {
           1: Colors.teal,
