@@ -122,8 +122,7 @@ class ScaffoldPageState extends State<ScaffoldPage> {
           ),
           AnimatedContainer(
             duration: Duration(milliseconds: 200),
-            transform:
-                Matrix4.translationValues(0, _bottomNavPosition, 0), // 슬라이딩 효과
+            transform: Matrix4.translationValues(0, _bottomNavPosition, 0),
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Theme(

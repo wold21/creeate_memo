@@ -10,52 +10,59 @@ class CustomBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.07,
+      height:
+          MediaQuery.of(context).padding.bottom + kBottomNavigationBarHeight,
       decoration: BoxDecoration(
         color: Color(0xff1A1918),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+      padding: EdgeInsets.only(top: 10),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          CustomNavItem(
-            index: 0,
-            onTap: onTap,
-            icon: Icons.home_filled,
-            isActive: currentIndex == 0,
-          ),
-          CustomNavItem(
-            index: 1,
-            onTap: onTap,
-            icon: Icons.star_border_sharp,
-            isActive: currentIndex == 1,
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: Color.fromARGB(99, 45, 43, 41),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
-              child: CustomNavItem(
-                index: -1,
-                icon: Icons.add_box_outlined,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              CustomNavItem(
+                index: 0,
                 onTap: onTap,
-                isActive: currentIndex == -1,
+                icon: Icons.home_filled,
+                isActive: currentIndex == 0,
               ),
-            ),
-          ),
-          CustomNavItem(
-            index: 2,
-            onTap: onTap,
-            icon: Icons.access_time_rounded,
-            isActive: currentIndex == 2,
-          ),
-          CustomNavItem(
-            index: 3,
-            onTap: onTap,
-            icon: Icons.settings,
-            isActive: currentIndex == 3,
+              CustomNavItem(
+                index: 1,
+                onTap: onTap,
+                icon: Icons.star_border_sharp,
+                isActive: currentIndex == 1,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Color(0x622D2B29),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0, vertical: 5.0),
+                  child: CustomNavItem(
+                    index: -1,
+                    icon: Icons.add_box_outlined,
+                    onTap: onTap,
+                    isActive: currentIndex == -1,
+                  ),
+                ),
+              ),
+              CustomNavItem(
+                index: 2,
+                onTap: onTap,
+                icon: Icons.access_time_rounded,
+                isActive: currentIndex == 2,
+              ),
+              CustomNavItem(
+                index: 3,
+                onTap: onTap,
+                icon: Icons.settings,
+                isActive: currentIndex == 3,
+              ),
+            ],
           ),
         ],
       ),

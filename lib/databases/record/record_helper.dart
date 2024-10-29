@@ -89,33 +89,25 @@ class RecordHelper extends ChangeNotifier {
         limit: limit,
         offset: offset);
 
+    final fetchedRecords = maps
+        .map((map) => RecordInfo(
+              id: map['id'],
+              title: map['title'],
+              description: map['description'],
+              createAt: map['createAt'],
+              updateAt: map['updateAt'],
+              isDelete: map['isDelete'],
+              isFavorite: map['isFavorite'],
+              replyCount: map['replyCount'],
+            ))
+        .toList();
+
     if (refresh) {
-      _allRecords = maps
-          .map((map) => RecordInfo(
-                id: map['id'],
-                title: map['title'],
-                description: map['description'],
-                createAt: map['createAt'],
-                updateAt: map['updateAt'],
-                isDelete: map['isDelete'],
-                isFavorite: map['isFavorite'],
-                replyCount: map['replyCount'],
-              ))
-          .toList();
+      _allRecords = fetchedRecords;
       _recordPage = 1;
     } else {
-      final newRecords = maps
-          .map((map) => RecordInfo(
-                id: map['id'],
-                title: map['title'],
-                description: map['description'],
-                createAt: map['createAt'],
-                updateAt: map['updateAt'],
-                isDelete: map['isDelete'],
-                isFavorite: map['isFavorite'],
-                replyCount: map['replyCount'],
-              ))
-          .toList();
+      final newRecords = fetchedRecords.where((record) =>
+          !_allRecords.any((existingRecord) => existingRecord.id == record.id));
 
       if (newRecords.isNotEmpty) {
         _allRecords.addAll(newRecords);

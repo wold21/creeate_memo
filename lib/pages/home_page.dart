@@ -137,28 +137,24 @@ class _HomePageState extends State<HomePage> {
                           ],
                         );
                       } else {
-                        return Stack(
-                          children: [
-                            ListView.builder(
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: records.length,
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => RecordDetail(
-                                            record: records[index]),
-                                      ),
-                                    );
-                                  },
-                                  child: RecordTile(records: records[index]),
+                        return ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: records.length,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        RecordDetail(record: records[index]),
+                                  ),
                                 );
                               },
-                            ),
-                          ],
+                              child: RecordTile(records: records[index]),
+                            );
+                          },
                         );
                       }
                     },
