@@ -46,7 +46,7 @@ class _GraphPageState extends State<GraphPage> {
 
   void _changeDate(dynamic date) {
     // nav position reset
-    widget.navCallback();
+    widget.navCallback(0.0);
     getRecords(date);
   }
 
@@ -78,38 +78,51 @@ class _GraphPageState extends State<GraphPage> {
                 _changeDate(value);
               }),
           Expanded(
-            child: Consumer<RecordHelper>(
-              builder: (context, value, child) {
-                final records = value.historyRecords;
-                if (records.isEmpty) {
-                  return Center(
-                    child: Text(
-                      'No records',
-                      style: TextStyle(
-                          color: themeColor.colorSubGrey, fontSize: 18),
-                    ),
-                  );
-                } else {
-                  return ListView.builder(
-                      controller: widget.scrollController,
-                      // shrinkWrap: true,
-                      // physics: NeverScrollableScrollPhysics(),
-                      itemCount: records.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      RecordDetail(record: records[index]),
-                                ),
-                              );
-                            },
-                            child: RecordTileMini(record: records[index]));
-                      });
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (ScrollNotification notification) {
+                if (notification is OverscrollNotification) {
+                  final double overscroll = notification.overscroll;
+                  if (overscroll > 0) {
+                    widget.navCallback(100.0);
+                  } else if (overscroll < 0) {
+                    widget.navCallback(0.0);
+                  }
                 }
+                return true;
               },
+              child: Consumer<RecordHelper>(
+                builder: (context, value, child) {
+                  final records = value.historyRecords;
+                  if (records.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'No records',
+                        style: TextStyle(
+                            color: themeColor.colorSubGrey, fontSize: 18),
+                      ),
+                    );
+                  } else {
+                    return ListView.builder(
+                        controller: widget.scrollController,
+                        // shrinkWrap: true,
+                        physics: AlwaysScrollableScrollPhysics(),
+                        itemCount: records.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        RecordDetail(record: records[index]),
+                                  ),
+                                );
+                              },
+                              child: RecordTileMini(record: records[index]));
+                        });
+                  }
+                },
+              ),
             ),
           )
         ],

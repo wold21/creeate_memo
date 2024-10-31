@@ -41,6 +41,7 @@ dependencies:
     flutter_heatmap_calendar: 1.0.5
     vibration: 2.0.0
     device_info_plus: 11.1.0
+    shared_preferences: 2.3.2
 
 dev_dependencies:
     flutter_test:

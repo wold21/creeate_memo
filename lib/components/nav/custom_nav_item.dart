@@ -1,4 +1,3 @@
-import 'package:create_author/config/color/custom_theme.dart';
 import 'package:flutter/material.dart';
 
 class CustomNavItem extends StatelessWidget {

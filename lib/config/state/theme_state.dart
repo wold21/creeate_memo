@@ -1,8 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:create_author/config/color/custom_theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeState with ChangeNotifier {
   bool isThemeToggle = false;
+
+  ThemeState() {
+    _loadThemePreference();
+  }
+
+  Future<void> _loadThemePreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    isThemeToggle = prefs.getBool('isThemeToggle') ?? false;
+    notifyListeners();
+  }
+
+  Future<void> _saveThemePreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isThemeToggle', isThemeToggle);
+  }
 
   final ThemeData _lightTheme = ThemeData(
     brightness: Brightness.light,
@@ -48,6 +64,7 @@ class ThemeState with ChangeNotifier {
 
   void toggleTheme() {
     isThemeToggle = !isThemeToggle;
+    _saveThemePreference();
     notifyListeners();
   }
 }

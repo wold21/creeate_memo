@@ -54,9 +54,9 @@ class ScaffoldPageState extends State<ScaffoldPage> {
     ];
   }
 
-  void _resetBottomNav() {
+  void _resetBottomNav(double amount) {
     setState(() {
-      _bottomNavPosition = 0;
+      _bottomNavPosition = amount;
     });
   }
 
