@@ -1,3 +1,4 @@
+import 'package:create_author/config/color/custom_theme.dart';
 import 'package:flutter/material.dart';
 
 class CustomNavItem extends StatelessWidget {
@@ -21,7 +22,9 @@ class CustomNavItem extends StatelessWidget {
         child: Icon(
           icon,
           size: 25,
-          color: isActive ? Colors.white : Colors.grey,
+          color: isActive
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.secondary,
         ),
       ),
     );

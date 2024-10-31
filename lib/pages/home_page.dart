@@ -1,6 +1,7 @@
 import 'package:create_author/components/indicator/indicator.dart';
 import 'package:create_author/components/record/record_detail.dart';
 import 'package:create_author/components/record/record_tile.dart';
+import 'package:create_author/config/color/custom_theme.dart';
 import 'package:create_author/databases/record/record_helper.dart';
 import 'package:create_author/pages/scaffold_page.dart';
 import 'package:flutter/material.dart';
@@ -63,6 +64,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeColor = Theme.of(context).extension<CustomTheme>()!;
     return SingleChildScrollView(
         controller: widget.scrollController,
         child: Column(
@@ -78,7 +80,7 @@ class _HomePageState extends State<HomePage> {
                       child: Text(
                         'Records',
                         style: TextStyle(
-                            color: Color(0xffF0EFEB),
+                            color: Theme.of(context).colorScheme.primary,
                             fontSize: 20,
                             fontWeight: FontWeight.w600),
                       ),
@@ -96,18 +98,19 @@ class _HomePageState extends State<HomePage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.end,
-                        children: const [
+                        children: [
                           Expanded(
                             child: Text(
                               'What\'s new',
                               style: TextStyle(
-                                  color: Color(0xFF5F5F5F), fontSize: 20),
+                                  color: themeColor.colorDeepGrey,
+                                  fontSize: 20),
                             ),
                           ),
                           Icon(
                             Icons.add_circle_outline_rounded,
                             size: 30,
-                            color: Color(0xFF5F5F5F),
+                            color: themeColor.colorDeepGrey,
                           )
                         ],
                       ),
@@ -132,7 +135,8 @@ class _HomePageState extends State<HomePage> {
                             Center(
                               child: Text('Start your first record.',
                                   style: TextStyle(
-                                      color: Color(0xFF4D4D4D), fontSize: 18)),
+                                      color: themeColor.colorSubGrey,
+                                      fontSize: 18)),
                             ),
                           ],
                         );

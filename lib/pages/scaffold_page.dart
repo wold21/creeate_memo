@@ -1,5 +1,6 @@
 import 'package:create_author/components/nav/custom_bottom_nav_bar.dart';
 import 'package:create_author/components/record/record_create.dart';
+import 'package:create_author/config/color/custom_theme.dart';
 import 'package:create_author/databases/record/record_helper.dart';
 import 'package:create_author/models/record.dart';
 import 'package:create_author/pages/favorite_page.dart';
@@ -94,9 +95,10 @@ class ScaffoldPageState extends State<ScaffoldPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeColor = Theme.of(context).extension<CustomTheme>()!;
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: Color(0xff1A1918),
+      backgroundColor: themeColor.borderColor,
       body: Stack(
         children: [
           _pages[_pageIndex],

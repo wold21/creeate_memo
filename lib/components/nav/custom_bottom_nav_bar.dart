@@ -1,4 +1,5 @@
 import 'package:create_author/components/nav/custom_nav_item.dart';
+import 'package:create_author/config/color/custom_theme.dart';
 import 'package:flutter/material.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
@@ -9,11 +10,12 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeColor = Theme.of(context).extension<CustomTheme>()!;
     return Container(
       height:
           MediaQuery.of(context).padding.bottom + kBottomNavigationBarHeight,
       decoration: BoxDecoration(
-        color: Color(0xff1A1918),
+        color: themeColor.borderColor,
       ),
       padding: EdgeInsets.only(top: 10),
       child: Column(
@@ -36,7 +38,7 @@ class CustomBottomNavBar extends StatelessWidget {
               ),
               Container(
                 decoration: BoxDecoration(
-                  color: Color(0x622D2B29),
+                  color: themeColor.recordCreateColor,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Padding(

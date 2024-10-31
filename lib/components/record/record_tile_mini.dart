@@ -1,3 +1,4 @@
+import 'package:create_author/config/color/custom_theme.dart';
 import 'package:create_author/models/record.dart';
 import 'package:create_author/utils/date.dart';
 import 'package:flutter/material.dart';
@@ -8,11 +9,12 @@ class RecordTileMini extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeColor = Theme.of(context).extension<CustomTheme>()!;
     return Container(
       decoration: BoxDecoration(
           border: Border(
               bottom: BorderSide(
-        color: Color(0xFF42403F),
+        color: themeColor.borderColor,
         width: 1,
       ))),
       child: Padding(
@@ -26,7 +28,7 @@ class RecordTileMini extends StatelessWidget {
                 child: Text(
                   record.title,
                   style: TextStyle(
-                      color: Color(0xffF0EFEB),
+                      color: Theme.of(context).colorScheme.primary,
                       fontSize: 15,
                       fontWeight: FontWeight.normal),
                   maxLines: 1,
@@ -37,7 +39,7 @@ class RecordTileMini extends StatelessWidget {
             Text(
               getDate(record.createAt),
               style: TextStyle(
-                  color: Color(0xFF4D4D4D),
+                  color: themeColor.colorSubGrey,
                   fontSize: 12,
                   fontWeight: FontWeight.w300),
             ),

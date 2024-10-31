@@ -1,5 +1,6 @@
 import 'package:create_author/components/record/record_detail.dart';
 import 'package:create_author/components/record/record_tile.dart';
+import 'package:create_author/config/color/custom_theme.dart';
 import 'package:create_author/databases/record/record_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +25,7 @@ class _FavoritePageState extends State<FavoritePage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeColor = Theme.of(context).extension<CustomTheme>()!;
     return SingleChildScrollView(
         controller: widget.scrollController,
         child: Column(
@@ -39,7 +41,7 @@ class _FavoritePageState extends State<FavoritePage> {
                       child: Text(
                         'Favorites',
                         style: TextStyle(
-                            color: Color(0xffF0EFEB),
+                            color: Theme.of(context).colorScheme.primary,
                             fontSize: 20,
                             fontWeight: FontWeight.w600),
                       ),
@@ -57,7 +59,8 @@ class _FavoritePageState extends State<FavoritePage> {
                             Center(
                               child: Text('No favorite records',
                                   style: TextStyle(
-                                      color: Color(0xFF4D4D4D), fontSize: 18)),
+                                      color: themeColor.colorSubGrey,
+                                      fontSize: 18)),
                             ),
                           ],
                         );

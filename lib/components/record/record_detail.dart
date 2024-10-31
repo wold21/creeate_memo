@@ -1,3 +1,4 @@
+import 'package:create_author/config/color/custom_theme.dart';
 import 'package:create_author/databases/record/record_helper.dart';
 import 'package:create_author/models/record.dart';
 import 'package:create_author/utils/date.dart';
@@ -65,8 +66,9 @@ class _RecordDetailState extends State<RecordDetail> {
 
   @override
   Widget build(BuildContext context) {
+    final themeColor = Theme.of(context).extension<CustomTheme>()!;
     return Scaffold(
-      backgroundColor: Color(0xff1A1918),
+      backgroundColor: themeColor.borderColor,
       body: FocusScope(
         node: FocusScopeNode(),
         child: GestureDetector(
@@ -88,8 +90,9 @@ class _RecordDetailState extends State<RecordDetail> {
                           _closePop(false);
                         },
                         style: TextButton.styleFrom(
-                          backgroundColor: Color(0xff1A1918),
-                          foregroundColor: Colors.white,
+                          backgroundColor: themeColor.borderColor,
+                          foregroundColor:
+                              Theme.of(context).colorScheme.primary,
                           textStyle: TextStyle(fontWeight: FontWeight.bold),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -104,14 +107,14 @@ class _RecordDetailState extends State<RecordDetail> {
                           _isFormValid ? _closePop(true) : null;
                         },
                         style: TextButton.styleFrom(
-                          backgroundColor: Color(0xff1A1918),
+                          backgroundColor: themeColor.borderColor,
                           foregroundColor: _isFormValid
-                              ? Color(0xffF0EFEB)
-                              : Colors.grey[700],
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).colorScheme.secondary,
                           textStyle: TextStyle(
                               color: _isFormValid
-                                  ? Color(0xff1A1918)
-                                  : Color(0xFF444444),
+                                  ? themeColor.colorDeepGrey
+                                  : Theme.of(context).colorScheme.secondary,
                               fontWeight: FontWeight.bold),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -135,13 +138,13 @@ class _RecordDetailState extends State<RecordDetail> {
                           decoration: InputDecoration(
                             hintText: 'Title',
                             hintStyle: TextStyle(
-                                color: Color(0xFF4D4D4D),
+                                color: themeColor.colorSubGrey,
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold),
                             border: InputBorder.none,
                           ),
                           style: TextStyle(
-                              color: Color(0xffF0EFEB),
+                              color: Theme.of(context).colorScheme.primary,
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
                         ),
@@ -151,7 +154,7 @@ class _RecordDetailState extends State<RecordDetail> {
                         child: Text(
                           getDate(widget.record.createAt),
                           style: TextStyle(
-                              color: Color(0xFF4D4D4D),
+                              color: themeColor.colorSubGrey,
                               fontSize: 11,
                               fontWeight: FontWeight.w300),
                         ),
@@ -169,13 +172,13 @@ class _RecordDetailState extends State<RecordDetail> {
                       decoration: InputDecoration(
                         hintText: 'What\'s new',
                         hintStyle: TextStyle(
-                            color: Color(0xFF4D4D4D),
+                            color: themeColor.colorSubGrey,
                             fontSize: 14,
                             fontWeight: FontWeight.w300),
                         border: InputBorder.none,
                       ),
                       style: TextStyle(
-                          color: Color(0xffF0EFEB),
+                          color: Theme.of(context).colorScheme.primary,
                           fontSize: 14,
                           fontWeight: FontWeight.w300),
                       keyboardType: TextInputType.multiline,

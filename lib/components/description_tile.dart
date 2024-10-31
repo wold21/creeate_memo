@@ -18,7 +18,7 @@ class _DescriptionTileState extends State<DescriptionTile> {
           Text(
             '${widget.description.substring(0, 300)}...',
             style: TextStyle(
-              color: Color(0xffF0EFEB),
+              color: Theme.of(context).colorScheme.primary,
               fontWeight: FontWeight.normal,
             ),
             maxLines: 5,
@@ -30,7 +30,7 @@ class _DescriptionTileState extends State<DescriptionTile> {
       return Text(
         widget.description,
         style: TextStyle(
-          color: Color(0xffF0EFEB),
+          color: Theme.of(context).colorScheme.primary,
           fontWeight: FontWeight.normal,
         ),
       );

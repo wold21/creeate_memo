@@ -1,6 +1,7 @@
 import 'package:create_author/components/calender.dart';
 import 'package:create_author/components/record/record_detail.dart';
 import 'package:create_author/components/record/record_tile_mini.dart';
+import 'package:create_author/config/color/custom_theme.dart';
 import 'package:create_author/databases/contribution/contribution_helper.dart';
 import 'package:create_author/databases/record/record_helper.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +52,7 @@ class _GraphPageState extends State<GraphPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeColor = Theme.of(context).extension<CustomTheme>()!;
     return SafeArea(
       child: Column(
         children: [
@@ -61,7 +63,7 @@ class _GraphPageState extends State<GraphPage> {
               child: Text(
                 'Activity Log',
                 style: TextStyle(
-                    color: Color(0xffF0EFEB),
+                    color: Theme.of(context).colorScheme.primary,
                     fontSize: 20,
                     fontWeight: FontWeight.w600),
               ),
@@ -83,7 +85,8 @@ class _GraphPageState extends State<GraphPage> {
                   return Center(
                     child: Text(
                       'No records',
-                      style: TextStyle(color: Color(0xFF4D4D4D), fontSize: 18),
+                      style: TextStyle(
+                          color: themeColor.colorSubGrey, fontSize: 18),
                     ),
                   );
                 } else {

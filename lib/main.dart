@@ -1,21 +1,30 @@
+import 'package:create_author/config/state/theme_state.dart';
 import 'package:create_author/databases/record/record_helper.dart';
 import 'package:create_author/pages/scaffold_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() => runApp(ChangeNotifierProvider(
-    create: (_) => RecordHelper(), child: CreateAnAuthor()));
+void main() => runApp(MultiProvider(providers: [
+      ChangeNotifierProvider(create: (_) => RecordHelper()),
+      ChangeNotifierProvider(create: (_) => ThemeState())
+    ], child: CreateAnAuthor()));
 
-class CreateAnAuthor extends StatelessWidget {
+class CreateAnAuthor extends StatefulWidget {
   const CreateAnAuthor({super.key});
 
   @override
+  State<CreateAnAuthor> createState() => _CreateAnAuthorState();
+}
+
+class _CreateAnAuthorState extends State<CreateAnAuthor> {
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      // theme: ThemeData(),
-      theme: ThemeData(brightness: Brightness.dark, fontFamily: 'Maruburi'),
-      home: ScaffoldPage(),
-    );
+    return Consumer<ThemeState>(builder: (context, themeState, child) {
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: themeState.currentTheme,
+        home: ScaffoldPage(),
+      );
+    });
   }
 }

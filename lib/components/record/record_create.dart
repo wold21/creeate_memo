@@ -1,3 +1,4 @@
+import 'package:create_author/config/color/custom_theme.dart';
 import 'package:create_author/models/record.dart';
 import 'package:flutter/material.dart';
 
@@ -34,6 +35,7 @@ class _RecordCreateState extends State<RecordCreate> {
 
   @override
   Widget build(BuildContext context) {
+    final themeColor = Theme.of(context).extension<CustomTheme>()!;
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom, // 키보드가 올라오면 하단 패딩 추가
@@ -41,7 +43,7 @@ class _RecordCreateState extends State<RecordCreate> {
       child: Container(
         height: MediaQuery.of(context).size.height * 0.52,
         decoration: BoxDecoration(
-          color: Color(0xff1A1918),
+          color: themeColor.borderColor,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(10),
             topRight: Radius.circular(10),
@@ -64,13 +66,13 @@ class _RecordCreateState extends State<RecordCreate> {
                       decoration: InputDecoration(
                         hintText: 'Title',
                         hintStyle: TextStyle(
-                            color: Color(0xFF4D4D4D),
+                            color: themeColor.colorSubGrey,
                             fontSize: 18,
                             fontWeight: FontWeight.bold),
                         border: InputBorder.none,
                       ),
                       style: TextStyle(
-                          color: Color(0xffF0EFEB),
+                          color: Theme.of(context).colorScheme.primary,
                           fontSize: 18,
                           fontWeight: FontWeight.bold),
                       autofocus: true,
@@ -87,7 +89,7 @@ class _RecordCreateState extends State<RecordCreate> {
                     child: Text(
                       'Cancel',
                       style: TextStyle(
-                        color: Color(0xffF2F2F2),
+                        color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -103,12 +105,13 @@ class _RecordCreateState extends State<RecordCreate> {
                     children: [
                       TextField(
                         controller: _descriptionController,
-                        style: TextStyle(color: Color(0xffF2F2F2)),
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary),
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: 'What\'s new',
                           hintStyle: TextStyle(
-                              color: Color(0xFF4D4D4D),
+                              color: themeColor.colorSubGrey,
                               fontSize: 18,
                               fontWeight: FontWeight.bold),
                         ),
@@ -146,15 +149,16 @@ class _RecordCreateState extends State<RecordCreate> {
                               }
                             : null,
                         style: TextButton.styleFrom(
-                          backgroundColor:
-                              currentValue ? Colors.white : Colors.grey[700],
+                          backgroundColor: currentValue
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).colorScheme.secondary,
                           foregroundColor: currentValue
-                              ? Color(0xff1A1918)
-                              : Colors.grey[700],
+                              ? themeColor.colorDeepGrey
+                              : Theme.of(context).colorScheme.secondary,
                           textStyle: TextStyle(
                               color: currentValue
-                                  ? Color(0xff1A1918)
-                                  : Color.fromARGB(255, 68, 68, 68)),
+                                  ? themeColor.colorDeepGrey
+                                  : Theme.of(context).colorScheme.secondary),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),

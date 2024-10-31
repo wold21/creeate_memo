@@ -1,3 +1,4 @@
+import 'package:create_author/config/color/custom_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 
@@ -13,19 +14,20 @@ class HistoryCalendar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeColor = Theme.of(context).extension<CustomTheme>()!;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
       child: HeatMapCalendar(
-        defaultColor: Colors.black,
+        defaultColor: Colors.transparent,
         flexible: true,
         datasets: contributionData,
         showColorTip: false,
-        weekTextColor: Color(0xffF0EFEB),
-        textColor: Color(0xffF0EFEB),
+        weekTextColor: Theme.of(context).colorScheme.primary,
+        textColor: Theme.of(context).colorScheme.primary,
         fontSize: 12,
         margin: EdgeInsets.all(5),
-        colorsets: const {
-          1: Colors.teal,
+        colorsets: {
+          1: themeColor.calenderColor,
         },
         onClick: (value) {
           onClick(value);

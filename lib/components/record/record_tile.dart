@@ -1,4 +1,5 @@
 import 'package:create_author/components/context_menu.dart';
+import 'package:create_author/config/color/custom_theme.dart';
 import 'package:create_author/databases/record/record_helper.dart';
 import 'package:create_author/models/record.dart';
 import 'package:create_author/utils/date.dart';
@@ -15,12 +16,13 @@ class RecordTile extends StatefulWidget {
 
 class _RecordTileState extends State<RecordTile> {
   void _showBottomSheet(BuildContext context) {
+    final themeColor = Theme.of(context).extension<CustomTheme>()!;
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.primary,
       builder: (BuildContext context) {
         return Container(
           padding: EdgeInsets.only(
@@ -37,16 +39,16 @@ class _RecordTileState extends State<RecordTile> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.horizontal_rule_rounded,
-                  color: Color(0xFF4D4D4D), size: 40),
+                  color: themeColor.colorSubGrey, size: 40),
               Container(
                 decoration: BoxDecoration(
-                  color: Color(0xFF4D4D4D),
+                  color: themeColor.colorSubGrey,
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Color(0xFF212121),
-                    borderRadius: BorderRadius.circular(15),
+                    color: themeColor.backgroundColor,
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -67,8 +69,8 @@ class _RecordTileState extends State<RecordTile> {
                         ContextMenu(
                           title: 'Delete',
                           icon: Icons.delete_forever_rounded,
-                          textColor: Colors.red,
-                          iconColor: Colors.red,
+                          textColor: Theme.of(context).colorScheme.error,
+                          iconColor: Theme.of(context).colorScheme.error,
                           onTap: () async {
                             Navigator.pop(context);
                             await Provider.of<RecordHelper>(context,
@@ -90,6 +92,7 @@ class _RecordTileState extends State<RecordTile> {
 
   @override
   Widget build(BuildContext context) {
+    final themeColor = Theme.of(context).extension<CustomTheme>()!;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
       // padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
@@ -97,7 +100,7 @@ class _RecordTileState extends State<RecordTile> {
         decoration: BoxDecoration(
           border: Border.all(
             width: 2,
-            color: Color(0xFF272423),
+            color: themeColor.recordTileBorderColor,
           ),
           borderRadius: BorderRadius.circular(12),
         ),
@@ -117,7 +120,7 @@ class _RecordTileState extends State<RecordTile> {
                         child: Text(
                           widget.records.title,
                           style: TextStyle(
-                              color: Color(0xffF0EFEB),
+                              color: Theme.of(context).colorScheme.primary,
                               fontSize: 15,
                               fontWeight: FontWeight.bold),
                           overflow: TextOverflow.ellipsis,
@@ -129,7 +132,7 @@ class _RecordTileState extends State<RecordTile> {
                         Text(
                           getDate(widget.records.createAt),
                           style: TextStyle(
-                              color: Color(0xFF4D4D4D),
+                              color: themeColor.colorSubGrey,
                               fontSize: 11,
                               fontWeight: FontWeight.w300),
                         ),
@@ -140,7 +143,7 @@ class _RecordTileState extends State<RecordTile> {
                           },
                           child: Icon(
                             Icons.more_vert,
-                            color: Color(0xFF4D4D4D),
+                            color: themeColor.colorSubGrey,
                             size: 22,
                           ),
                         ),
@@ -158,7 +161,7 @@ class _RecordTileState extends State<RecordTile> {
                       child: Text(
                         widget.records.description,
                         style: TextStyle(
-                            color: Color(0xffF0EFEB),
+                            color: Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.w300),
                         maxLines: 5,
                         overflow: TextOverflow.ellipsis,
@@ -182,7 +185,7 @@ class _RecordTileState extends State<RecordTile> {
                                 ? Icons.star_outlined
                                 : Icons.star_outline_outlined,
                             size: 22,
-                            color: Color(0xffF0EFEB)),
+                            color: Theme.of(context).colorScheme.primary),
                       ),
                     ]),
                     // SizedBox(width: 10),
