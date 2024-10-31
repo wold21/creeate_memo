@@ -17,6 +17,7 @@ class RecordHelper extends ChangeNotifier {
   List<RecordInfo> _allRecords = [];
   List<RecordInfo> _favoriteRecords = [];
   List<RecordInfo> _historyRecords = [];
+  List<RecordInfo> _deletedRecords = [];
 
   RecordHelper._internal();
 
@@ -302,11 +303,50 @@ class RecordHelper extends ChangeNotifier {
       await callUpdate();
       await ContributionHelper()
           .addOrUpdateContribution(DateTime.parse(record.createAt), 'delete');
+      await getDeletedRecords();
 
       _allRecords.removeWhere((element) => element.id == id);
     } else {
       throw Exception('Record not found');
     }
     notifyListeners();
+  }
+
+  // Get deleted records
+  Future<void> getDeletedRecords() async {
+    final db = await DatabaseHelper().database;
+    final List<Map<String, dynamic>> maps = await db.query('records',
+        where: 'isDelete = 1', orderBy: 'createAt DESC');
+    _deletedRecords = List.generate(maps.length, (i) {
+      return RecordInfo(
+        id: maps[i]['id'],
+        title: maps[i]['title'],
+        description: maps[i]['description'],
+        createAt: maps[i]['createAt'],
+        updateAt: maps[i]['updateAt'],
+        isDelete: maps[i]['isDelete'],
+        isFavorite: maps[i]['isFavorite'],
+        replyCount: maps[i]['replyCount'],
+      );
+    });
+
+    notifyListeners();
+  }
+
+  // Restore record
+  Future<void> resetRecords() async {
+    final db = await DatabaseHelper().database;
+    try {
+      await db.delete('records');
+      await db.execute('VACUUM;');
+      _allRecords = [];
+      _favoriteRecords = [];
+      _historyRecords = [];
+      _deletedRecords = [];
+    } catch (e) {
+      throw Exception('Failed to reset records');
+    } finally {
+      notifyListeners();
+    }
   }
 }

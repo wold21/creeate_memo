@@ -121,4 +121,16 @@ class ContributionHelper extends ChangeNotifier {
           whereArgs: [contribution.id]);
     }
   }
+
+  Future<void> resetContributions() async {
+    final db = await DatabaseHelper().database;
+    try {
+      await db.delete('contributions');
+      await db.execute('VACUUM;');
+    } catch (e) {
+      throw Exception('Failed to reset contributions');
+    } finally {
+      notifyListeners();
+    }
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:create_author/components/dialog/delete_dialog.dart';
 import 'package:create_author/components/setting_menu.dart';
 import 'package:create_author/config/color/custom_theme.dart';
 import 'package:create_author/config/state/theme_state.dart';
@@ -16,29 +17,7 @@ class SettingsPage extends StatelessWidget {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            backgroundColor: themeColor.borderColor,
-            title: Text(
-              'Confirm Deletion',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-            ),
-            content: Text('Are you sure you want to delete all records?',
-                style: TextStyle(fontSize: 14)),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('Delete'),
-              ),
-            ],
-          );
+          return DeleteDialog();
         },
       );
     }
