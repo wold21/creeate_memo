@@ -1,7 +1,8 @@
 import 'package:create_author/components/dialog/delete_dialog.dart';
 import 'package:create_author/components/setting_menu.dart';
-import 'package:create_author/config/color/custom_theme.dart';
 import 'package:create_author/config/state/theme_state.dart';
+import 'package:create_author/pages/trash_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,7 +12,6 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeState = Provider.of<ThemeState>(context);
-    final themeColor = Theme.of(context).extension<CustomTheme>()!;
 
     void showDeleteConfirmationDialog(BuildContext context) {
       showDialog(
@@ -92,9 +92,18 @@ class SettingsPage extends StatelessWidget {
                     itemName: 'Reset Records',
                   ),
                 ),
-                SettingMenu(
-                  icon: Icon(Icons.delete_rounded),
-                  itemName: 'Trash',
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => TrashPage(),
+                        ));
+                  },
+                  child: SettingMenu(
+                    icon: Icon(Icons.delete_rounded),
+                    itemName: 'Trash',
+                  ),
                 ),
                 SettingMenu(
                   icon: Icon(Icons.feedback),

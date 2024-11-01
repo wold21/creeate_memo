@@ -1,42 +1,21 @@
-import 'package:create_author/components/record/record_detail.dart';
-import 'package:create_author/components/record/record_tile.dart';
-import 'package:create_author/config/%08scroll_notifier.dart';
 import 'package:create_author/config/color/custom_theme.dart';
 import 'package:create_author/databases/record/record_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class FavoritePage extends StatefulWidget {
-  const FavoritePage({super.key});
+class TrashPage extends StatefulWidget {
+  const TrashPage({super.key});
 
   @override
-  State<FavoritePage> createState() => _FavoritePageState();
+  State<TrashPage> createState() => _TrashPageState();
 }
 
-class _FavoritePageState extends State<FavoritePage> {
-  late ScrollNotifier? _scrollNotifier;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    _scrollNotifier = Provider.of<ScrollNotifier>(context, listen: false);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<RecordHelper>(context, listen: false).getFavoriteRecords();
-    });
-  }
-
+class _TrashPageState extends State<TrashPage> {
   @override
   Widget build(BuildContext context) {
     final themeColor = Theme.of(context).extension<CustomTheme>()!;
     return SingleChildScrollView(
-        controller: _scrollNotifier?.scrollController,
+        controller: ScrollController(),
         child: Column(
           children: [
             SafeArea(
@@ -58,7 +37,7 @@ class _FavoritePageState extends State<FavoritePage> {
                   ),
                   Consumer<RecordHelper>(
                     builder: (context, recordHelper, child) {
-                      final records = recordHelper.favoriteRecords;
+                      final records = recordHelper.deletedRecords;
                       if (records.isEmpty) {
                         return Column(
                           children: [
@@ -74,23 +53,24 @@ class _FavoritePageState extends State<FavoritePage> {
                           ],
                         );
                       } else {
-                        return ListView.builder(
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: records.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => RecordDetail(
-                                            record: records[index]),
-                                      ),
-                                    );
-                                  },
-                                  child: RecordTile(records: records[index]));
-                            });
+                        return Center(child: Text('on Data'));
+                        // return ListView.builder(
+                        //     physics: NeverScrollableScrollPhysics(),
+                        //     itemCount: records.length,
+                        //     shrinkWrap: true,
+                        //     itemBuilder: (context, index) {
+                        //       return GestureDetector(
+                        //           onTap: () {
+                        //             Navigator.push(
+                        //               context,
+                        //               MaterialPageRoute(
+                        //                 builder: (context) => RecordDetail(
+                        //                     record: records[index]),
+                        //               ),
+                        //             );
+                        //           },
+                        //           child: RecordTile(records: records[index]));
+                        //     });
                       }
                     },
                   )

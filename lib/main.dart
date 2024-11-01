@@ -1,3 +1,4 @@
+import 'package:create_author/config/%08scroll_notifier.dart';
 import 'package:create_author/config/state/theme_state.dart';
 import 'package:create_author/databases/record/record_helper.dart';
 import 'package:create_author/pages/scaffold_page.dart';
@@ -6,7 +7,8 @@ import 'package:provider/provider.dart';
 
 void main() => runApp(MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => RecordHelper()),
-      ChangeNotifierProvider(create: (_) => ThemeState())
+      ChangeNotifierProvider(create: (_) => ThemeState()),
+      ChangeNotifierProvider(create: (_) => ScrollNotifier())
     ], child: CreateAnAuthor()));
 
 class CreateAnAuthor extends StatefulWidget {

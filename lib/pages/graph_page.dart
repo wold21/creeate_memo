@@ -1,6 +1,7 @@
 import 'package:create_author/components/calender.dart';
 import 'package:create_author/components/record/record_detail.dart';
 import 'package:create_author/components/record/record_tile_mini.dart';
+import 'package:create_author/config/%08scroll_notifier.dart';
 import 'package:create_author/config/color/custom_theme.dart';
 import 'package:create_author/databases/contribution/contribution_helper.dart';
 import 'package:create_author/databases/record/record_helper.dart';
@@ -8,16 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class GraphPage extends StatefulWidget {
-  final ScrollController scrollController;
-  final Function navCallback;
-  const GraphPage(
-      {super.key, required this.scrollController, required this.navCallback});
+  const GraphPage({super.key});
 
   @override
   State<GraphPage> createState() => _GraphPageState();
 }
 
 class _GraphPageState extends State<GraphPage> {
+  late ScrollNotifier? _scrollNotifier;
   Map<DateTime, int> contributionData = {};
 
   @override
@@ -30,6 +29,13 @@ class _GraphPageState extends State<GraphPage> {
       Provider.of<RecordHelper>(context, listen: false)
           .getRecordsByDate(DateTime.now());
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _scrollNotifier = Provider.of<ScrollNotifier>(context, listen: false);
   }
 
   Future<void> getContributions() async {
@@ -46,7 +52,7 @@ class _GraphPageState extends State<GraphPage> {
 
   void _changeDate(dynamic date) {
     // nav position reset
-    widget.navCallback(0.0);
+    _scrollNotifier?.updateBottomNavPosition(0.0);
     getRecords(date);
   }
 
@@ -83,9 +89,9 @@ class _GraphPageState extends State<GraphPage> {
                 if (notification is OverscrollNotification) {
                   final double overscroll = notification.overscroll;
                   if (overscroll > 0) {
-                    widget.navCallback(100.0);
+                    _scrollNotifier?.updateBottomNavPosition(100.0);
                   } else if (overscroll < 0) {
-                    widget.navCallback(0.0);
+                    _scrollNotifier?.updateBottomNavPosition(0.0);
                   }
                 }
                 return true;
@@ -103,7 +109,7 @@ class _GraphPageState extends State<GraphPage> {
                     );
                   } else {
                     return ListView.builder(
-                        controller: widget.scrollController,
+                        controller: _scrollNotifier?.scrollController,
                         // shrinkWrap: true,
                         physics: AlwaysScrollableScrollPhysics(),
                         itemCount: records.length,

@@ -333,6 +333,8 @@ class RecordHelper extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<RecordInfo> get deletedRecords => _deletedRecords;
+
   // Restore record
   Future<void> resetRecords() async {
     final db = await DatabaseHelper().database;

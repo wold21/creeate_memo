@@ -1,6 +1,7 @@
 import 'package:create_author/components/indicator/indicator.dart';
 import 'package:create_author/components/record/record_detail.dart';
 import 'package:create_author/components/record/record_tile.dart';
+import 'package:create_author/config/%08scroll_notifier.dart';
 import 'package:create_author/config/color/custom_theme.dart';
 import 'package:create_author/databases/record/record_helper.dart';
 import 'package:create_author/pages/scaffold_page.dart';
@@ -8,8 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
-  final ScrollController scrollController;
-  const HomePage({super.key, required this.scrollController});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -17,6 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   OverlayEntry? _overlayEntry;
+  late ScrollNotifier? _scrollNotifier;
 
   @override
   void initState() {
@@ -25,14 +26,22 @@ class _HomePageState extends State<HomePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<RecordHelper>(context, listen: false).getRecordsPage();
     });
-    widget.scrollController.addListener(_scrollListener);
+    final scrollNotifier = Provider.of<ScrollNotifier>(context, listen: false);
+    scrollNotifier.scrollController.addListener(_scrollListener);
   }
 
   void _scrollListener() {
-    if (widget.scrollController.position.pixels ==
-        widget.scrollController.position.maxScrollExtent) {
-      Provider.of<RecordHelper>(context, listen: false).getRecordsPage();
+    final scrollController = _scrollNotifier!.scrollController;
+
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
+      if (mounted) {
+        Provider.of<RecordHelper>(context, listen: false).getRecordsPage();
+      }
     }
+
+    _scrollNotifier!
+        .updateScrollDirection(scrollController.position.userScrollDirection);
   }
 
   void showOverlay(BuildContext context) {
@@ -56,8 +65,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _scrollNotifier = Provider.of<ScrollNotifier>(context, listen: false);
+    _scrollNotifier?.scrollController.addListener(_scrollListener);
+  }
+
+  @override
   void dispose() {
-    widget.scrollController.removeListener(_scrollListener);
+    _scrollNotifier?.scrollController.removeListener(_scrollListener);
+
     hideOverlay();
     super.dispose();
   }
@@ -66,7 +84,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final themeColor = Theme.of(context).extension<CustomTheme>()!;
     return SingleChildScrollView(
-        controller: widget.scrollController,
+        controller: _scrollNotifier?.scrollController,
         child: Column(
           children: [
             SafeArea(

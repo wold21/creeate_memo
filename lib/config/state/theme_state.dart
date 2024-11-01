@@ -33,7 +33,7 @@ class ThemeState with ChangeNotifier {
           colorSubGrey: Color(0xFF4D4D4D),
           colorDeepGrey: Color(0xFF5F5F5F),
           backgroundColor: Color(0xFF4A4442),
-          calenderColor: Colors.teal,
+          calenderColor: Colors.brown,
           borderColor: Color(0xFFD6D1CC),
           recordCreateColor: Color(0xFFD6D1CC),
           recordTileBorderColor: Color(0xFF625B58))
