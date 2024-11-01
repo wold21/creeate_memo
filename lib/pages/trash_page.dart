@@ -1,3 +1,6 @@
+import 'package:create_author/components/record/record_tile.dart';
+import 'package:create_author/components/record/record_tile_trash.dart';
+import 'package:create_author/config/%08scroll_notifier.dart';
 import 'package:create_author/config/color/custom_theme.dart';
 import 'package:create_author/databases/record/record_helper.dart';
 import 'package:flutter/material.dart';
@@ -11,73 +14,114 @@ class TrashPage extends StatefulWidget {
 }
 
 class _TrashPageState extends State<TrashPage> {
+  ScrollNotifier? _scrollNotifier;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<RecordHelper>(context, listen: false).getDeletedRecords();
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _scrollNotifier = Provider.of<ScrollNotifier>(context, listen: false);
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeColor = Theme.of(context).extension<CustomTheme>()!;
-    return SingleChildScrollView(
-        controller: ScrollController(),
-        child: Column(
-          children: [
-            SafeArea(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: 20.0, bottom: 10.0, left: 25.0, right: 25.0),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Favorites',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                  ),
-                  Consumer<RecordHelper>(
-                    builder: (context, recordHelper, child) {
-                      final records = recordHelper.deletedRecords;
-                      if (records.isEmpty) {
-                        return Column(
-                          children: [
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.4,
-                            ),
-                            Center(
-                              child: Text('No favorite records',
-                                  style: TextStyle(
-                                      color: themeColor.colorSubGrey,
-                                      fontSize: 18)),
-                            ),
-                          ],
-                        );
-                      } else {
-                        return Center(child: Text('on Data'));
-                        // return ListView.builder(
-                        //     physics: NeverScrollableScrollPhysics(),
-                        //     itemCount: records.length,
-                        //     shrinkWrap: true,
-                        //     itemBuilder: (context, index) {
-                        //       return GestureDetector(
-                        //           onTap: () {
-                        //             Navigator.push(
-                        //               context,
-                        //               MaterialPageRoute(
-                        //                 builder: (context) => RecordDetail(
-                        //                     record: records[index]),
-                        //               ),
-                        //             );
-                        //           },
-                        //           child: RecordTile(records: records[index]));
-                        //     });
-                      }
-                    },
-                  )
-                ],
-              ),
+    return Scaffold(
+        backgroundColor: themeColor.borderColor,
+        appBar: AppBar(
+          title: Text(
+            'Trash',
+            style: TextStyle(color: Theme.of(context).colorScheme.primary),
+          ),
+          backgroundColor: themeColor.borderColor,
+          elevation: 0,
+        ),
+        body: Container(
+          color: themeColor.borderColor,
+          child: SingleChildScrollView(
+            controller: _scrollNotifier?.scrollController,
+            child: Column(
+              children: [
+                Consumer<RecordHelper>(
+                  builder: (context, recordHelper, child) {
+                    final records = recordHelper.deletedRecords;
+                    if (records.isEmpty) {
+                      return Column(
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.4,
+                          ),
+                          Center(
+                            child: Text('No trash records',
+                                style: TextStyle(
+                                    color: themeColor.colorSubGrey,
+                                    fontSize: 18)),
+                          ),
+                        ],
+                      );
+                    } else {
+                      return ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: records.length,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            return Dismissible(
+                                key: Key(records[index].id.toString()),
+                                direction: DismissDirection.horizontal,
+                                dismissThresholds: const {
+                                  DismissDirection.startToEnd: 0.4,
+                                  DismissDirection.endToStart: 0.4,
+                                },
+                                background: Container(
+                                  color: Colors.green[300],
+                                  alignment: Alignment.centerLeft,
+                                  padding: EdgeInsets.only(left: 20),
+                                  child: Icon(Icons.restore,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
+                                ),
+                                secondaryBackground: Container(
+                                  color: Colors.red[300],
+                                  alignment: Alignment.centerRight,
+                                  padding: EdgeInsets.only(right: 20),
+                                  child: Icon(Icons.delete,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
+                                ),
+                                onDismissed: (direction) async {
+                                  final targetRecord = records[index];
+                                  setState(() {
+                                    records.remove(targetRecord);
+                                  });
+                                  if (direction ==
+                                      DismissDirection.startToEnd) {
+                                    await recordHelper
+                                        .restoreRecords(targetRecord.id);
+                                  } else {
+                                    await recordHelper
+                                        .truncateRecords(targetRecord.id);
+                                  }
+                                },
+                                child:
+                                    RecordTileTrash(records: records[index]));
+                          });
+                    }
+                  },
+                ),
+              ],
             ),
-          ],
+          ),
         ));
   }
 }

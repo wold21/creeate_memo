@@ -24,7 +24,8 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<RecordHelper>(context, listen: false).getRecordsPage();
+      Provider.of<RecordHelper>(context, listen: false)
+          .getRecordsPage(refresh: true);
     });
     final scrollNotifier = Provider.of<ScrollNotifier>(context, listen: false);
     scrollNotifier.scrollController.addListener(_scrollListener);

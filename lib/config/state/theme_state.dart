@@ -36,7 +36,9 @@ class ThemeState with ChangeNotifier {
           calenderColor: Colors.brown,
           borderColor: Color(0xFFD6D1CC),
           recordCreateColor: Color(0xFFD6D1CC),
-          recordTileBorderColor: Color(0xFF625B58))
+          recordTileBorderColor: Color(0xFF625B58),
+          onColor: Color(0xff1A1918),
+          offColor: Color(0xFF949494))
     ],
   );
 
@@ -56,7 +58,9 @@ class ThemeState with ChangeNotifier {
           calenderColor: Colors.teal,
           borderColor: Color(0xff1A1918),
           recordCreateColor: Color(0x622D2B29),
-          recordTileBorderColor: Color(0xFF272423))
+          recordTileBorderColor: Color(0xFF272423),
+          onColor: Color(0xffF0EFEB),
+          offColor: Color(0xFF7A7A7A))
     ],
   );
 

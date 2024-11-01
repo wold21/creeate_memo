@@ -8,6 +8,8 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
   final Color borderColor;
   final Color recordCreateColor;
   final Color recordTileBorderColor;
+  final Color offColor;
+  final Color onColor;
 
   const CustomTheme(
       {required this.colorSubGrey,
@@ -16,18 +18,21 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
       required this.calenderColor,
       required this.borderColor,
       required this.recordCreateColor,
-      required this.recordTileBorderColor});
+      required this.recordTileBorderColor,
+      required this.offColor,
+      required this.onColor});
 
   @override
-  CustomTheme copyWith({
-    Color? colorSubGrey,
-    Color? colorDeepGrey,
-    Color? backgroundColor,
-    Color? calenderColor,
-    Color? borderColor,
-    Color? recordCreateColor,
-    Color? recordTileBorderColor,
-  }) {
+  CustomTheme copyWith(
+      {Color? colorSubGrey,
+      Color? colorDeepGrey,
+      Color? backgroundColor,
+      Color? calenderColor,
+      Color? borderColor,
+      Color? recordCreateColor,
+      Color? recordTileBorderColor,
+      Color? offColor,
+      Color? onColor}) {
     return CustomTheme(
         colorSubGrey: colorSubGrey ?? this.colorSubGrey,
         colorDeepGrey: colorDeepGrey ?? this.colorDeepGrey,
@@ -36,7 +41,9 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
         borderColor: borderColor ?? this.borderColor,
         recordCreateColor: recordCreateColor ?? this.recordCreateColor,
         recordTileBorderColor:
-            recordTileBorderColor ?? this.recordTileBorderColor);
+            recordTileBorderColor ?? this.recordTileBorderColor,
+        offColor: offColor ?? this.offColor,
+        onColor: onColor ?? this.onColor);
   }
 
   @override
@@ -51,6 +58,8 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
         recordCreateColor:
             Color.lerp(recordCreateColor, other.recordCreateColor, t)!,
         recordTileBorderColor:
-            Color.lerp(recordTileBorderColor, other.recordTileBorderColor, t)!);
+            Color.lerp(recordTileBorderColor, other.recordTileBorderColor, t)!,
+        offColor: Color.lerp(offColor, other.offColor, t)!,
+        onColor: Color.lerp(onColor, other.onColor, t)!);
   }
 }

@@ -34,10 +34,10 @@ class RecordHelper extends ChangeNotifier {
   }
 
   // Get record by id
-  Future<RecordInfo?> getRecordById(int id) async {
+  Future<RecordInfo?> getRecordById(int id, {bool isDelete = false}) async {
     final db = await DatabaseHelper().database;
-    final List<Map<String, dynamic>> maps = await db
-        .query('records', where: 'id = ? AND isDelete = 0', whereArgs: [id]);
+    final List<Map<String, dynamic>> maps = await db.query('records',
+        where: 'id = ? AND isDelete = ?', whereArgs: [id, isDelete ? 1 : 0]);
     if (maps.isNotEmpty) {
       return RecordInfo(
         id: maps.first['id'],
@@ -350,5 +350,51 @@ class RecordHelper extends ChangeNotifier {
     } finally {
       notifyListeners();
     }
+  }
+
+  // Restore record
+  Future<void> restoreRecords(int id) async {
+    final db = await DatabaseHelper().database;
+    final record = await getRecordById(id, isDelete: true);
+    if (record != null) {
+      await db.update(
+        'records',
+        {'isDelete': 0},
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+
+      await callUpdate();
+      await ContributionHelper()
+          .addOrUpdateContribution(DateTime.parse(record.createAt), 'restore');
+      await getDeletedRecords();
+
+      _deletedRecords.removeWhere((element) => element.id == id);
+    } else {
+      throw Exception('Record not found');
+    }
+    notifyListeners();
+  }
+
+  Future<void> truncateRecords(int id) async {
+    final db = await DatabaseHelper().database;
+    final record = await getRecordById(id, isDelete: true);
+    if (record != null) {
+      await db.delete(
+        'records',
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+
+      await callUpdate();
+      await ContributionHelper()
+          .addOrUpdateContribution(DateTime.parse(record.createAt), 'restore');
+      await getDeletedRecords();
+
+      _deletedRecords.removeWhere((element) => element.id == id);
+    } else {
+      throw Exception('Record not found');
+    }
+    notifyListeners();
   }
 }

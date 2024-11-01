@@ -6,7 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="8e2d6505-9d9b-4d63-a282-df204af27679" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/create_author.iml" beforeDir="false" afterPath="$PROJECT_DIR$/create_author.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/components/record/record_create.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/components/record/record_create.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/config/color/custom_theme.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/config/color/custom_theme.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/config/state/theme_state.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/config/state/theme_state.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/databases/record/record_helper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/databases/record/record_helper.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/pages/home_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/pages/home_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/pages/trash_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/pages/trash_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,6 +22,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2nyPiobPAd9zdvC7mG4ejOVoCPU" />
   <component name="ProjectView">
@@ -30,6 +40,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
     "dart.analysis.tool.window.visible": "false",
     "io.flutter.reload.alreadyRun": "true",
@@ -44,6 +55,15 @@
     "settings.editor.selected.configurable": "preferences.pluginManager",
     "show.migrate.to.gradle.popup": "false",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "com.android.tools.idea.sqlite.queryhistory": [
+      "select * from records where isDelete = 0 limit 50 offset 0;",
+      "select * from records where isDelete = 0 limit 50 offset 1;",
+      "select * from records where isDelete = 0 limit 50 offset 2;",
+      "select * from records where isDelete = 0 limit 50 offset 4;",
+      "select * from records where isDelete = 0 limit 50 offset 3;"
+    ]
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -56,6 +76,7 @@
       <updated>1729942471668</updated>
       <workItem from="1729942473335" duration="498000" />
       <workItem from="1729942987701" duration="639000" />
+      <workItem from="1730455434761" duration="1589000" />
     </task>
     <servers />
   </component>

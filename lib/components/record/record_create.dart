@@ -135,8 +135,8 @@ class _RecordCreateState extends State<RecordCreate> {
                       bool currentValue =
                           _titleController.text.trim().isNotEmpty &&
                               _descriptionController.text.trim().isNotEmpty;
-                      return TextButton(
-                        onPressed: currentValue
+                      return GestureDetector(
+                        onTap: currentValue
                             ? () {
                                 FocusScope.of(context).unfocus();
                                 widget.onSubmit(RecordInfo.insert(
@@ -148,22 +148,16 @@ class _RecordCreateState extends State<RecordCreate> {
                                 Navigator.pop(context);
                               }
                             : null,
-                        style: TextButton.styleFrom(
-                          backgroundColor: currentValue
-                              ? Theme.of(context).colorScheme.primary
-                              : Theme.of(context).colorScheme.secondary,
-                          foregroundColor: currentValue
-                              ? themeColor.colorDeepGrey
-                              : Theme.of(context).colorScheme.secondary,
-                          textStyle: TextStyle(
-                              color: currentValue
-                                  ? themeColor.colorDeepGrey
-                                  : Theme.of(context).colorScheme.secondary),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Icon(
+                            Icons.send_rounded,
+                            size: 25,
+                            color: currentValue
+                                ? themeColor.onColor
+                                : themeColor.offColor,
                           ),
                         ),
-                        child: Text('Save'),
                       );
                     },
                   ),
