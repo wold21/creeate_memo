@@ -24,7 +24,7 @@ class ThemeState with ChangeNotifier {
     brightness: Brightness.light,
     fontFamily: 'Maruburi',
     colorScheme: ColorScheme.light(
-      primary: Color(0xff1A1918),
+      primary: Color(0xFF1A1918),
       secondary: Colors.grey,
       error: Colors.red,
     ),
