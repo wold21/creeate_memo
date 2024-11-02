@@ -7,6 +7,7 @@ import 'package:create_author/models/record.dart';
 import 'package:create_author/pages/favorite_page.dart';
 import 'package:create_author/pages/graph_page.dart';
 import 'package:create_author/pages/home_page.dart';
+import 'package:create_author/pages/search_page.dart';
 import 'package:create_author/pages/settings_page.dart';
 import 'package:create_author/utils/vibrator.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,13 @@ class ScaffoldPageState extends State<ScaffoldPage> {
   @override
   void initState() {
     super.initState();
-    _pages = [HomePage(), FavoritePage(), GraphPage(), SettingsPage()];
+    _pages = [
+      HomePage(),
+      SearchPage(),
+      FavoritePage(),
+      GraphPage(),
+      SettingsPage()
+    ];
   }
 
   @override

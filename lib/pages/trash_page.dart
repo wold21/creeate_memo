@@ -1,8 +1,9 @@
-import 'package:create_author/components/record/record_tile.dart';
+import 'package:create_author/components/record/record_detail_trash.dart';
 import 'package:create_author/components/record/record_tile_trash.dart';
 import 'package:create_author/config/%08scroll_notifier.dart';
 import 'package:create_author/config/color/custom_theme.dart';
 import 'package:create_author/databases/record/record_helper.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -116,8 +117,18 @@ class _TrashPageState extends State<TrashPage> {
                                         .truncateRecords(targetRecord.id);
                                   }
                                 },
-                                child:
-                                    RecordTileTrash(records: records[index]));
+                                child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          CupertinoPageRoute(
+                                            builder: (context) =>
+                                                RecordDetailTrash(
+                                                    record: records[index]),
+                                          ));
+                                    },
+                                    child: RecordTileTrash(
+                                        records: records[index])));
                           });
                     }
                   },
