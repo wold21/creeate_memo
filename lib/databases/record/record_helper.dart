@@ -18,6 +18,7 @@ class RecordHelper extends ChangeNotifier {
   List<RecordInfo> _favoriteRecords = [];
   List<RecordInfo> _historyRecords = [];
   List<RecordInfo> _deletedRecords = [];
+  List<RecordInfo> _searchRecords = [];
 
   RecordHelper._internal();
 
@@ -397,4 +398,31 @@ class RecordHelper extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  Future<void> getSearchRecords(String query) async {
+    final db = await DatabaseHelper().database;
+    if (query.isEmpty) {
+      _searchRecords = [];
+      notifyListeners();
+      return;
+    }
+    final List<Map<String, dynamic>> maps =
+        await db.rawQuery('''SELECT * FROM records
+    WHERE (title LIKE '%$query%' OR description LIKE '%$query%') AND isDelete = 0 Order By createAt DESC, id DESC''');
+    _searchRecords = List.generate(maps.length, (i) {
+      return RecordInfo(
+        id: maps[i]['id'],
+        title: maps[i]['title'],
+        description: maps[i]['description'],
+        createAt: maps[i]['createAt'],
+        updateAt: maps[i]['updateAt'],
+        isDelete: maps[i]['isDelete'],
+        isFavorite: maps[i]['isFavorite'],
+        replyCount: maps[i]['replyCount'],
+      );
+    });
+    notifyListeners();
+  }
+
+  List<RecordInfo> get searchRecords => _searchRecords;
 }
