@@ -1,6 +1,8 @@
 import 'package:create_author/components/dialog/delete_dialog.dart';
 import 'package:create_author/components/setting_menu.dart';
 import 'package:create_author/config/state/theme_state.dart';
+import 'package:create_author/pages/about_page.dart';
+import 'package:create_author/pages/report_feedback_page.dart';
 import 'package:create_author/pages/trash_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -105,13 +107,31 @@ class SettingsPage extends StatelessWidget {
                     itemName: 'Trash',
                   ),
                 ),
-                SettingMenu(
-                  icon: Icon(Icons.feedback),
-                  itemName: 'Report & Feedback',
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => ReportFeedbackPage(),
+                        ));
+                  },
+                  child: SettingMenu(
+                    icon: Icon(Icons.feedback),
+                    itemName: 'Bug Report & Feedback',
+                  ),
                 ),
-                SettingMenu(
-                  icon: Icon(Icons.info_outline_rounded),
-                  itemName: 'About',
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => AboutPage(),
+                        ));
+                  },
+                  child: SettingMenu(
+                    icon: Icon(Icons.info_outline_rounded),
+                    itemName: 'About',
+                  ),
                 )
               ],
             ),

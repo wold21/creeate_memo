@@ -40,7 +40,10 @@ class _TrashPageState extends State<TrashPage> {
         appBar: AppBar(
           title: Text(
             'Trash',
-            style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
+                fontSize: 16,
+                fontWeight: FontWeight.bold),
           ),
           backgroundColor: themeColor.borderColor,
           elevation: 0,

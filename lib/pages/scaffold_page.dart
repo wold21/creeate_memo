@@ -26,23 +26,6 @@ class ScaffoldPageState extends State<ScaffoldPage> {
   @override
   void initState() {
     super.initState();
-
-    // // 스크롤 이벤트 리스너 등록
-    // _scrollController.addListener(() {
-    //   if (_scrollController.position.userScrollDirection ==
-    //       ScrollDirection.reverse) {
-    //     setState(() {
-    //       _bottomNavPosition = 100;
-    //     });
-    //   } else if (_scrollController.position.userScrollDirection ==
-    //       ScrollDirection.forward) {
-    //     // 위로 스크롤 시
-    //     setState(() {
-    //       _bottomNavPosition = 0;
-    //     });
-    //   }
-    // });
-
     _pages = [HomePage(), FavoritePage(), GraphPage(), SettingsPage()];
   }
 
@@ -99,7 +82,7 @@ class ScaffoldPageState extends State<ScaffoldPage> {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Colors.black.withOpacity(0.7), // 위쪽
+                        Colors.black.withOpacity(0.4), // 위쪽
                         Colors.black.withOpacity(0.0), // 아래쪽
                       ],
                       begin: Alignment.topCenter,
