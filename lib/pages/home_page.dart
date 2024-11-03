@@ -155,7 +155,7 @@ class _HomePageState extends State<HomePage> {
                               child: Text('Start your first record.',
                                   style: TextStyle(
                                       color: themeColor.colorSubGrey,
-                                      fontSize: 18)),
+                                      fontSize: 15)),
                             ),
                           ],
                         );

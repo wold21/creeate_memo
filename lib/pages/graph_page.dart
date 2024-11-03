@@ -104,7 +104,7 @@ class _GraphPageState extends State<GraphPage> {
                       child: Text(
                         'No records',
                         style: TextStyle(
-                            color: themeColor.colorSubGrey, fontSize: 18),
+                            color: themeColor.colorSubGrey, fontSize: 15),
                       ),
                     );
                   } else {

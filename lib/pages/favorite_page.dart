@@ -69,7 +69,7 @@ class _FavoritePageState extends State<FavoritePage> {
                               child: Text('No favorite records',
                                   style: TextStyle(
                                       color: themeColor.colorSubGrey,
-                                      fontSize: 18)),
+                                      fontSize: 15)),
                             ),
                           ],
                         );

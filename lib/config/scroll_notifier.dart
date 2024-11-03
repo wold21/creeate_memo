@@ -20,6 +20,15 @@ class ScrollNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void keyboardVisibilityListener(
+      BuildContext context, ScrollDirection scrollDirection) {
+    if (scrollDirection == ScrollDirection.reverse) {
+      updateBottomNavPosition(MediaQuery.of(context).viewInsets.bottom);
+    } else if (scrollDirection == ScrollDirection.forward) {
+      updateBottomNavPosition(0);
+    }
+  }
+
   @override
   void dispose() {
     scrollController.dispose();
