@@ -128,6 +128,7 @@ class _RecordTileState extends State<RecordTile> {
                       ),
                     ),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
                           getDate(widget.records.createAt),
@@ -135,6 +136,21 @@ class _RecordTileState extends State<RecordTile> {
                               color: themeColor.colorSubGrey,
                               fontSize: 11,
                               fontWeight: FontWeight.w300),
+                        ),
+                        const SizedBox(width: 10),
+                        GestureDetector(
+                          onTap: () {
+                            Provider.of<RecordHelper>(context, listen: false)
+                                .toggleFavorite(widget.records.id);
+                          },
+                          child: Icon(
+                              widget.records.isFavorite == 1
+                                  ? Icons.star_outlined
+                                  : Icons.star_outline_outlined,
+                              size: 22,
+                              color: widget.records.isFavorite == 1
+                                  ? Theme.of(context).colorScheme.primary
+                                  : themeColor.colorSubGrey),
                         ),
                         const SizedBox(width: 5),
                         GestureDetector(
@@ -144,7 +160,7 @@ class _RecordTileState extends State<RecordTile> {
                           child: Icon(
                             Icons.more_vert,
                             color: themeColor.colorSubGrey,
-                            size: 22,
+                            size: 24,
                           ),
                         ),
                       ],
@@ -170,37 +186,21 @@ class _RecordTileState extends State<RecordTile> {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 5.0, left: 20.0),
-                child: Row(
-                  children: [
-                    Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                      GestureDetector(
-                        onTap: () {
-                          Provider.of<RecordHelper>(context, listen: false)
-                              .toggleFavorite(widget.records.id);
-                        },
-                        child: Icon(
-                            widget.records.isFavorite == 1
-                                ? Icons.star_outlined
-                                : Icons.star_outline_outlined,
-                            size: 22,
-                            color: Theme.of(context).colorScheme.primary),
-                      ),
-                    ]),
-                    // SizedBox(width: 10),
-                    // Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                    //   Icon(Icons.insert_comment_outlined,
-                    //       color: Color(0xffF0EFEB), size: 22),
-                    //   SizedBox(width: 5),
-                    //   Text(
-                    //     records.replyCount.toString(),
-                    //     style: TextStyle(color: Color(0xffF0EFEB)),
-                    //   )
-                    // ])
-                  ],
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.only(top: 5.0, left: 20.0),
+              //   child: GestureDetector(
+              //     onTap: () {
+              //       Provider.of<RecordHelper>(context, listen: false)
+              //           .toggleFavorite(widget.records.id);
+              //     },
+              //     child: Icon(
+              //         widget.records.isFavorite == 1
+              //             ? Icons.star_outlined
+              //             : Icons.star_outline_outlined,
+              //         size: 22,
+              //         color: Theme.of(context).colorScheme.primary),
+              //   ),
+              // ),
             ],
           ),
         ),
