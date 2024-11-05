@@ -3,13 +3,18 @@ import 'package:create_author/config/state/theme_state.dart';
 import 'package:create_author/databases/record/record_helper.dart';
 import 'package:create_author/pages/scaffold_page.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 
-void main() => runApp(MultiProvider(providers: [
-      ChangeNotifierProvider(create: (_) => RecordHelper()),
-      ChangeNotifierProvider(create: (_) => ThemeState()),
-      ChangeNotifierProvider(create: (_) => ScrollNotifier())
-    ], child: CreateAnAuthor()));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => RecordHelper()),
+    ChangeNotifierProvider(create: (_) => ThemeState()),
+    ChangeNotifierProvider(create: (_) => ScrollNotifier())
+  ], child: CreateAnAuthor()));
+}
 
 class CreateAnAuthor extends StatefulWidget {
   const CreateAnAuthor({super.key});
