@@ -4,7 +4,7 @@ import 'package:create_author/models/record.dart';
 import 'package:create_author/service/ad_service.dart';
 import 'package:create_author/utils/date.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+// import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 
 class RecordDetail extends StatefulWidget {
@@ -16,7 +16,7 @@ class RecordDetail extends StatefulWidget {
 }
 
 class _RecordDetailState extends State<RecordDetail> {
-  InterstitialAd? _interstitialAd;
+  // InterstitialAd? _interstitialAd;
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
 
@@ -26,7 +26,7 @@ class _RecordDetailState extends State<RecordDetail> {
   @override
   void initState() {
     super.initState();
-    _createInterstitialAd();
+    // _createInterstitialAd();
     _titleController = TextEditingController(text: widget.record.title);
     _descriptionController =
         TextEditingController(text: widget.record.description);
@@ -41,26 +41,26 @@ class _RecordDetailState extends State<RecordDetail> {
     super.dispose();
   }
 
-  void _createInterstitialAd() {
-    print("interstitial ad created");
-    InterstitialAd.load(
-      adUnitId: AdService.interstitialAdUnitId!,
-      request: const AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
-        onAdLoaded: (ad) {
-          setState(() {
-            _interstitialAd = ad;
-          });
-        },
-        onAdFailedToLoad: (error) {
-          print('InterstitialAd failed to load: $error');
-          setState(() {
-            _interstitialAd = null;
-          });
-        },
-      ),
-    );
-  }
+  // void _createInterstitialAd() {
+  //   print("interstitial ad created");
+  //   InterstitialAd.load(
+  //     adUnitId: AdService.interstitialAdUnitId!,
+  //     request: const AdRequest(),
+  //     adLoadCallback: InterstitialAdLoadCallback(
+  //       onAdLoaded: (ad) {
+  //         setState(() {
+  //           _interstitialAd = ad;
+  //         });
+  //       },
+  //       onAdFailedToLoad: (error) {
+  //         print('InterstitialAd failed to load: $error');
+  //         setState(() {
+  //           _interstitialAd = null;
+  //         });
+  //       },
+  //     ),
+  //   );
+  // }
 
   void _saveRecord() {
     final record = RecordInfo.update(
@@ -84,23 +84,23 @@ class _RecordDetailState extends State<RecordDetail> {
     }
   }
 
-  void _showInterstitialAd() {
-    print("showing interstitial ad");
-    if (_interstitialAd != null) {
-      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
-        onAdDismissedFullScreenContent: (ad) {
-          ad.dispose();
-          _createInterstitialAd();
-        },
-        onAdFailedToShowFullScreenContent: (ad, error) {
-          ad.dispose();
-          _createInterstitialAd();
-        },
-      );
-      _interstitialAd!.show();
-      _interstitialAd = null;
-    }
-  }
+  // void _showInterstitialAd() {
+  //   print("showing interstitial ad");
+  //   if (_interstitialAd != null) {
+  //     _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+  //       onAdDismissedFullScreenContent: (ad) {
+  //         ad.dispose();
+  //         _createInterstitialAd();
+  //       },
+  //       onAdFailedToShowFullScreenContent: (ad, error) {
+  //         ad.dispose();
+  //         _createInterstitialAd();
+  //       },
+  //     );
+  //     _interstitialAd!.show();
+  //     _interstitialAd = null;
+  //   }
+  // }
 
   bool get _isFormValid {
     return _titleController.text.trim().isNotEmpty &&
@@ -131,7 +131,7 @@ class _RecordDetailState extends State<RecordDetail> {
                       TextButton(
                         onPressed: () {
                           _closePop(false);
-                          _showInterstitialAd();
+                          // _showInterstitialAd();
                         },
                         style: TextButton.styleFrom(
                           backgroundColor: themeColor.borderColor,
@@ -149,7 +149,7 @@ class _RecordDetailState extends State<RecordDetail> {
                       TextButton(
                         onPressed: () {
                           _isFormValid ? _closePop(true) : null;
-                          _showInterstitialAd();
+                          // _showInterstitialAd();
                         },
                         style: TextButton.styleFrom(
                           backgroundColor: themeColor.borderColor,
