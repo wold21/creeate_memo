@@ -130,8 +130,8 @@ class _RecordDetailState extends State<RecordDetail> {
                     children: [
                       TextButton(
                         onPressed: () {
-                          _showInterstitialAd();
                           _closePop(false);
+                          _showInterstitialAd();
                         },
                         style: TextButton.styleFrom(
                           backgroundColor: themeColor.borderColor,
@@ -194,16 +194,6 @@ class _RecordDetailState extends State<RecordDetail> {
                               fontWeight: FontWeight.bold),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text(
-                          getDate(widget.record.createAt),
-                          style: TextStyle(
-                              color: themeColor.colorSubGrey,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w300),
-                        ),
-                      ),
                     ],
                   ),
                   Expanded(
@@ -231,6 +221,21 @@ class _RecordDetailState extends State<RecordDetail> {
                       textInputAction: TextInputAction.newline,
                     ),
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text(
+                          getDate(widget.record.createAt),
+                          style: TextStyle(
+                              color: themeColor.colorDeepGrey,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w300),
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
