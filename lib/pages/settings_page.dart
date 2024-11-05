@@ -4,12 +4,36 @@ import 'package:create_author/config/state/theme_state.dart';
 import 'package:create_author/pages/about_page.dart';
 import 'package:create_author/pages/report_feedback_page.dart';
 import 'package:create_author/pages/trash_page.dart';
+import 'package:create_author/service/ad_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  BannerAd? _bannerAd;
+
+  @override
+  void initState() {
+    super.initState();
+    _createBannerAd();
+  }
+
+  void _createBannerAd() {
+    _bannerAd = BannerAd(
+      adUnitId: AdService.bannerAdUnitId,
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: AdService.bannerAdListener,
+    )..load();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,119 +49,126 @@ class SettingsPage extends StatelessWidget {
     }
 
     return SafeArea(
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(
-                top: 20.0, bottom: 10.0, left: 25.0, right: 25.0),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Settings',
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600),
+      child: Stack(children: [
+        Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                  top: 20.0, bottom: 10.0, left: 25.0, right: 25.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Settings',
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600),
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-                top: 10.0, bottom: 10.0, left: 20.0, right: 25.0),
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Theme'),
-                      ToggleButtons(
-                        borderRadius: BorderRadius.circular(10),
-                        isSelected: [
-                          themeState.isThemeToggle,
-                          !themeState.isThemeToggle,
-                        ],
-                        onPressed: (index) {
-                          themeState.toggleTheme(); // 테마 변경
-                        },
-                        children: const [
-                          Icon(Icons.light_mode_rounded),
-                          Icon(Icons.dark_mode_rounded),
-                        ],
-                      )
-                    ],
+            Padding(
+              padding: EdgeInsets.only(
+                  top: 10.0, bottom: 10.0, left: 20.0, right: 25.0),
+              child: Column(
+                children: [
+                  if (_bannerAd != null)
+                    SizedBox(
+                      height: 60, // 광고의 높이 설정
+                      child: AdWidget(ad: _bannerAd!),
+                    ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Theme'),
+                        ToggleButtons(
+                          borderRadius: BorderRadius.circular(10),
+                          isSelected: [
+                            themeState.isThemeToggle,
+                            !themeState.isThemeToggle,
+                          ],
+                          onPressed: (index) {
+                            themeState.toggleTheme(); // 테마 변경
+                          },
+                          children: const [
+                            Icon(Icons.light_mode_rounded),
+                            Icon(Icons.dark_mode_rounded),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(vertical: 10.0),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     children: [
-                //       Text('Language'),
-                //       ToggleButtons(children: [
-                //         Text('Kor'),
-                //         Text('Eng'),
-                //       ], isSelected: [
-                //         true,
-                //         false
-                //       ])
-                //     ],
-                //   ),
-                // ),
-                GestureDetector(
-                  onTap: () {
-                    showDeleteConfirmationDialog(context);
-                  },
-                  child: SettingMenu(
-                    icon: Icon(Icons.restore_rounded),
-                    itemName: 'Reset Records',
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //     children: [
+                  //       Text('Language'),
+                  //       ToggleButtons(children: [
+                  //         Text('Kor'),
+                  //         Text('Eng'),
+                  //       ], isSelected: [
+                  //         true,
+                  //         false
+                  //       ])
+                  //     ],
+                  //   ),
+                  // ),
+                  GestureDetector(
+                    onTap: () {
+                      showDeleteConfirmationDialog(context);
+                    },
+                    child: SettingMenu(
+                      icon: Icon(Icons.restore_rounded),
+                      itemName: 'Reset Records',
+                    ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                          builder: (context) => TrashPage(),
-                        ));
-                  },
-                  child: SettingMenu(
-                    icon: Icon(Icons.delete_rounded),
-                    itemName: 'Trash',
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => TrashPage(),
+                          ));
+                    },
+                    child: SettingMenu(
+                      icon: Icon(Icons.delete_rounded),
+                      itemName: 'Trash',
+                    ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                          builder: (context) => ReportFeedbackPage(),
-                        ));
-                  },
-                  child: SettingMenu(
-                    icon: Icon(Icons.feedback),
-                    itemName: 'Bug Report & Feedback',
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => ReportFeedbackPage(),
+                          ));
+                    },
+                    child: SettingMenu(
+                      icon: Icon(Icons.feedback),
+                      itemName: 'Bug Report & Feedback',
+                    ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                          builder: (context) => AboutPage(),
-                        ));
-                  },
-                  child: SettingMenu(
-                    icon: Icon(Icons.info_outline_rounded),
-                    itemName: 'About',
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => AboutPage(),
+                          ));
+                    },
+                    child: SettingMenu(
+                      icon: Icon(Icons.info_outline_rounded),
+                      itemName: 'About',
+                    ),
                   ),
-                )
-              ],
+                ],
+              ),
             ),
-          )
-        ],
-      ),
+          ],
+        ),
+      ]),
     );
   }
 }

@@ -1,9 +1,33 @@
 import 'package:create_author/components/text_widget.dart';
 import 'package:create_author/config/color/custom_theme.dart';
+import 'package:create_author/service/ad_service.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-class AboutPage extends StatelessWidget {
+class AboutPage extends StatefulWidget {
   const AboutPage({super.key});
+
+  @override
+  State<AboutPage> createState() => _AboutPageState();
+}
+
+class _AboutPageState extends State<AboutPage> {
+  BannerAd? _bannerAd;
+
+  @override
+  void initState() {
+    super.initState();
+    _createBannerAd();
+  }
+
+  void _createBannerAd() {
+    _bannerAd = BannerAd(
+      adUnitId: AdService.bannerAdUnitId,
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: AdService.bannerAdListener,
+    )..load();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +46,13 @@ class AboutPage extends StatelessWidget {
         backgroundColor: themeColor.borderColor,
         elevation: 0,
       ),
+      bottomNavigationBar: _bannerAd != null
+          ? Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              height: 50,
+              child: AdWidget(ad: _bannerAd!),
+            )
+          : null,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),

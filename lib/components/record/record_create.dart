@@ -1,6 +1,9 @@
 import 'package:create_author/config/color/custom_theme.dart';
 import 'package:create_author/models/record.dart';
+import 'package:create_author/service/ad_service.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RecordCreate extends StatefulWidget {
   final Function(RecordInfo) onSubmit;
@@ -11,6 +14,7 @@ class RecordCreate extends StatefulWidget {
 }
 
 class _RecordCreateState extends State<RecordCreate> {
+  InterstitialAd? _interstitialAd;
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
   final ValueNotifier<bool> isButtonEnabled = ValueNotifier(false);
@@ -18,6 +22,7 @@ class _RecordCreateState extends State<RecordCreate> {
   @override
   void initState() {
     super.initState();
+    _createInterstitialAd();
     _titleController = TextEditingController();
     _descriptionController = TextEditingController();
     _descriptionController.addListener(() {
@@ -31,6 +36,65 @@ class _RecordCreateState extends State<RecordCreate> {
     _descriptionController.dispose();
     isButtonEnabled.dispose();
     super.dispose();
+  }
+
+  void _createInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdService.interstitialAdUnitId!,
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          print("Interstitial ad loaded successfully.");
+          setState(() {
+            _interstitialAd = ad;
+          });
+        },
+        onAdFailedToLoad: (error) {
+          print("Failed to load interstitial ad: $error");
+          setState(() {
+            _interstitialAd = null;
+          });
+        },
+      ),
+    );
+  }
+
+  void _onAd() async {
+    bool isAdPossible = await adCounterCheck();
+    if (isAdPossible && _interstitialAd != null) {
+      _showInterstitialAd(); // 광고 표시
+    } else {
+      print("Ad is not ready or ad counter does not allow showing an ad.");
+    }
+  }
+
+  Future<bool> adCounterCheck() async {
+    final prefs = await SharedPreferences.getInstance();
+    final adCounter = prefs.getInt('adCounterCreate') ?? 0;
+    if (adCounter >= 3) {
+      await prefs.setInt('adCounterCreate', 0);
+    } else {
+      await prefs.setInt('adCounterCreate', adCounter + 1);
+    }
+    return adCounter == 3 ? true : false;
+  }
+
+  void _showInterstitialAd() {
+    if (_interstitialAd != null) {
+      print("Showing ad");
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (ad) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+        onAdFailedToShowFullScreenContent: (ad, error) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+      );
+      _interstitialAd!.show();
+      _interstitialAd = null;
+    }
   }
 
   @override
@@ -85,6 +149,7 @@ class _RecordCreateState extends State<RecordCreate> {
                       _titleController.clear();
                       _descriptionController.clear();
                       Navigator.pop(context);
+                      _onAd();
                     },
                     child: Text(
                       'Cancel',
@@ -146,6 +211,7 @@ class _RecordCreateState extends State<RecordCreate> {
                                 _titleController.clear();
                                 _descriptionController.clear();
                                 Navigator.pop(context);
+                                _onAd();
                               }
                             : null,
                         child: Padding(
