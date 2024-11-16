@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
-        android:label="createAuthor"
+        android:label="NoteByDay"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -37,6 +37,11 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-7804050256012308~9835052679" />
+        <service android:name="com.android.billingclient.api.ProxyBillingActivity"
+            android:exported="false" />
+        <meta-data
+            android:name="com.android.billingclient.billing"
+            android:value="true" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

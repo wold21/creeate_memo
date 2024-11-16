@@ -24,12 +24,18 @@ class AdService {
   }
 
   static final BannerAdListener bannerAdListener = BannerAdListener(
-    onAdLoaded: (ad) => print('Ad loaded: ${ad.adUnitId}.'),
+    onAdLoaded: (ad) {
+      // print('Ad loaded: ${ad.adUnitId}.');
+    },
     onAdFailedToLoad: (ad, error) {
       ad.dispose();
-      print('Ad failed to load: $error');
+      // print('Ad failed to load: $error');
     },
-    onAdOpened: (ad) => print('Ad opened: ${ad.adUnitId}.'),
-    onAdClosed: (ad) => print('Ad closed: ${ad.adUnitId}.'),
+    onAdOpened: (ad) {
+      // print('Ad opened: ${ad.adUnitId}.');
+    },
+    onAdClosed: (ad) {
+      // print('Ad closed: ${ad.adUnitId}.');
+    },
   );
 }

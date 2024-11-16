@@ -1,4 +1,5 @@
 import 'package:create_author/config/color/custom_theme.dart';
+import 'package:create_author/config/state/ad_state.dart';
 import 'package:create_author/databases/record/record_helper.dart';
 import 'package:create_author/models/record.dart';
 import 'package:create_author/service/ad_service.dart';
@@ -20,6 +21,7 @@ class _RecordDetailState extends State<RecordDetail> {
   InterstitialAd? _interstitialAd;
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
+  final _adOnCounter = 3;
 
   late String _title;
   late String _description;
@@ -27,7 +29,10 @@ class _RecordDetailState extends State<RecordDetail> {
   @override
   void initState() {
     super.initState();
-    _createInterstitialAd();
+    final adState = Provider.of<AdState>(context, listen: false);
+    if (!adState.isAdsRemoved) {
+      _createInterstitialAd();
+    }
     _titleController = TextEditingController(text: widget.record.title);
     _descriptionController =
         TextEditingController(text: widget.record.description);
@@ -86,6 +91,8 @@ class _RecordDetailState extends State<RecordDetail> {
   }
 
   void _onAd() async {
+    if (Provider.of<AdState>(context, listen: false).isAdsRemoved) return;
+
     bool isAdPossible = await adCounterCheck();
     if (isAdPossible && _interstitialAd != null) {
       _showInterstitialAd(); // 광고 표시
@@ -97,12 +104,12 @@ class _RecordDetailState extends State<RecordDetail> {
   Future<bool> adCounterCheck() async {
     final prefs = await SharedPreferences.getInstance();
     final adCounter = prefs.getInt('adCounter') ?? 0;
-    if (adCounter >= 3) {
+    if (adCounter >= _adOnCounter) {
       await prefs.setInt('adCounter', 0);
     } else {
       await prefs.setInt('adCounter', adCounter + 1);
     }
-    return adCounter == 3 ? true : false;
+    return adCounter == _adOnCounter ? true : false;
   }
 
   void _showInterstitialAd() {
