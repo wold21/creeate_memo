@@ -1,8 +1,10 @@
 import 'package:create_author/components/text_widget.dart';
 import 'package:create_author/config/color/custom_theme.dart';
+import 'package:create_author/config/state/ad_state.dart';
 import 'package:create_author/service/ad_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:provider/provider.dart';
 
 class AboutPage extends StatefulWidget {
   const AboutPage({super.key});
@@ -17,7 +19,10 @@ class _AboutPageState extends State<AboutPage> {
   @override
   void initState() {
     super.initState();
-    _createBannerAd();
+    final adState = Provider.of<AdState>(context, listen: false);
+    if (!adState.isAdsRemoved) {
+      _createBannerAd();
+    }
   }
 
   void _createBannerAd() {
