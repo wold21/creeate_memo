@@ -23,6 +23,13 @@ class AdState extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> resetIsAds() async {
+    print("in");
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('ads_removed', false);
+    print("out");
+  }
+
   Future<bool> restorePurchases() async {
     final available = await InAppPurchase.instance.isAvailable();
     if (!available) {

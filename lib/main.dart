@@ -6,9 +6,18 @@ import 'package:create_author/pages/scaffold_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Firebase 초기화
+  await Firebase.initializeApp();
+
+  // Crashlytics 설정
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+
   MobileAds.instance.initialize();
 
   final adState = AdState();

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:create_author/config/state/ad_state.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:create_author/components/dialog/delete_dialog.dart';
 import 'package:create_author/components/setting_menu.dart';
 import 'package:create_author/config/state/theme_state.dart';
@@ -38,6 +37,7 @@ class _SettingsPageState extends State<SettingsPage> {
         _inAppPurchase.purchaseStream;
     _subscription = purchaseUpdated.listen(_listenToPurchaseUpdated);
     _initializeInAppPurchase();
+    _checkPurchaseHistory();
   }
 
   void _createBannerAd() {
@@ -50,31 +50,58 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _handlePurchaseButton() async {
-    if (_products != null && _products!.isNotEmpty) {
-      final PurchaseParam purchaseParam =
-          PurchaseParam(productDetails: _products!.first);
-      try {
-        await _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
-      } catch (e) {
-        // 구매 실패 시 복원 시도
-        await _inAppPurchase.restorePurchases();
+    if (!Provider.of<AdState>(context, listen: false).isAdsRemoved) {
+      if (_products != null && _products!.isNotEmpty) {
+        final PurchaseParam purchaseParam =
+            PurchaseParam(productDetails: _products!.first);
+        try {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('구매를 진행중입니다...')),
+          );
+          await _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('구매 실패: $e\n구매 내역을 복원합니다.')),
+          );
+          await _inAppPurchase.restorePurchases();
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('상품 정보를 불러올 수 없습니다.')),
+        );
       }
     } else {
-      // 상품 정보가 없는 경우 복원 시도
-      await _inAppPurchase.restorePurchases();
+      try {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('구매 내역을 복원중입니다...')),
+        );
+        await _inAppPurchase.restorePurchases();
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('구매 내역 복원 실패: $e')),
+        );
+      }
     }
   }
 
   Future<void> _listenToPurchaseUpdated(
       List<PurchaseDetails> purchaseDetailsList) async {
     for (final purchaseDetails in purchaseDetailsList) {
-      if (purchaseDetails.status == PurchaseStatus.purchased) {
+      if (purchaseDetails.status == PurchaseStatus.purchased ||
+          purchaseDetails.status == PurchaseStatus.restored) {
         final adState = Provider.of<AdState>(context, listen: false);
         await adState.removeAds();
         setState(() {
           _bannerAd?.dispose();
           _bannerAd = null;
         });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('광고가 제거되었습니다!')),
+        );
+      } else if (purchaseDetails.status == PurchaseStatus.error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('오류가 발생했습니다: ${purchaseDetails.error}')),
+        );
       }
     }
   }
@@ -97,6 +124,20 @@ class _SettingsPageState extends State<SettingsPage> {
     setState(() {
       _products = response.productDetails;
     });
+  }
+
+  Future<void> _checkPurchaseHistory() async {
+    try {
+      // 구매 이력 확인 시도
+      await _inAppPurchase.restorePurchases();
+    } catch (e) {
+      // 오류 발생시 처리
+      debugPrint('Purchase history check failed: $e');
+    }
+  }
+
+  void test() {
+    AdState().resetIsAds();
   }
 
   @override
@@ -226,7 +267,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       onTap:
                           adState.isAdsRemoved ? null : _handlePurchaseButton,
                       child: SettingMenu(
-                        icon: Icon(Icons.highlight_remove_sharp),
+                        icon: adState.isAdsRemoved
+                            ? Icon(Icons.shopping_cart_rounded)
+                            : Icon(Icons.highlight_remove_sharp),
                         itemName:
                             adState.isAdsRemoved ? 'Restore' : 'Remove Ads',
                       ),
