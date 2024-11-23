@@ -56,10 +56,11 @@ class ScaffoldPageState extends State<ScaffoldPage> {
       callVibration();
       showInputSheet();
     } else {
+      if (_pageIndex == index) return;
+      _onAd();
       setState(() {
         _pageIndex = index;
       });
-      _onAd();
     }
   }
 

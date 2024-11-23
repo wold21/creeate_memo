@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:create_author/components/indicator/indicator.dart';
 import 'package:create_author/config/state/ad_state.dart';
 import 'package:create_author/components/dialog/delete_dialog.dart';
 import 'package:create_author/components/setting_menu.dart';
@@ -20,8 +21,10 @@ class SettingsPage extends StatefulWidget {
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _SettingsPageState extends State<SettingsPage>
+    with WidgetsBindingObserver {
   BannerAd? _bannerAd;
+  OverlayEntry? _overlayEntry;
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
   late StreamSubscription<List<PurchaseDetails>> _subscription;
   List<ProductDetails>? _products;
@@ -29,15 +32,31 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    final adState = Provider.of<AdState>(context, listen: false);
-    if (!adState.isAdsRemoved) {
-      _createBannerAd();
-    }
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeAds();
+    });
     final Stream<List<PurchaseDetails>> purchaseUpdated =
         _inAppPurchase.purchaseStream;
     _subscription = purchaseUpdated.listen(_listenToPurchaseUpdated);
     _initializeInAppPurchase();
     _checkPurchaseHistory();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      debugPrint('App resumed - checking purchase status');
+      _checkPurchaseHistory();
+    }
+  }
+
+  void _initializeAds() {
+    final adState = Provider.of<AdState>(context, listen: false);
+    debugPrint('Current ad state: ${adState.isAdsRemoved}'); // 디버그 로그 추가
+    if (!adState.isAdsRemoved) {
+      _createBannerAd();
+    }
   }
 
   void _createBannerAd() {
@@ -50,44 +69,46 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _handlePurchaseButton() async {
-    if (!Provider.of<AdState>(context, listen: false).isAdsRemoved) {
-      if (_products != null && _products!.isNotEmpty) {
-        final PurchaseParam purchaseParam =
-            PurchaseParam(productDetails: _products!.first);
-        try {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('구매를 진행중입니다...')),
+    try {
+      showOverlay(context);
+      if (!Provider.of<AdState>(context, listen: false).isAdsRemoved) {
+        if (_products != null && _products!.isNotEmpty) {
+          debugPrint('Product ID: ${_products!.first.id}');
+          debugPrint('Product Price: ${_products!.first.price}');
+
+          final PurchaseParam purchaseParam = PurchaseParam(
+            productDetails: _products!.first,
           );
+
           await _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
-        } catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('구매 실패: $e\n구매 내역을 복원합니다.')),
-          );
-          await _inAppPurchase.restorePurchases();
+        } else {
+          throw Exception('No products available');
         }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('상품 정보를 불러올 수 없습니다.')),
-        );
-      }
-    } else {
-      try {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('구매 내역을 복원중입니다...')),
-        );
         await _inAppPurchase.restorePurchases();
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('구매 내역 복원 실패: $e')),
-        );
       }
+    } catch (e) {
+      debugPrint('Purchase error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    } finally {
+      hideOverlay();
     }
   }
 
   Future<void> _listenToPurchaseUpdated(
       List<PurchaseDetails> purchaseDetailsList) async {
     for (final purchaseDetails in purchaseDetailsList) {
-      if (purchaseDetails.status == PurchaseStatus.purchased ||
+      debugPrint('Purchase status: ${purchaseDetails.status}');
+      debugPrint(
+          'Purchase transactionDate: ${purchaseDetails.transactionDate}');
+
+      if (purchaseDetails.status == PurchaseStatus.pending) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Purchase pending...')),
+        );
+      } else if (purchaseDetails.status == PurchaseStatus.purchased ||
           purchaseDetails.status == PurchaseStatus.restored) {
         final adState = Provider.of<AdState>(context, listen: false);
         await adState.removeAds();
@@ -96,12 +117,27 @@ class _SettingsPageState extends State<SettingsPage> {
           _bannerAd = null;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('광고가 제거되었습니다!')),
+          SnackBar(content: Text('Purchase successful!')),
         );
       } else if (purchaseDetails.status == PurchaseStatus.error) {
+        final error = purchaseDetails.error;
+        if (error != null &&
+            error.message != null &&
+            error.message.contains('canceled')) {
+          debugPrint('Purchase was canceled or refunded');
+          final adState = Provider.of<AdState>(context, listen: false);
+          await adState.resetIsAds();
+          setState(() {
+            _createBannerAd();
+          });
+        }
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('오류가 발생했습니다: ${purchaseDetails.error}')),
+          SnackBar(content: Text('Error: ${purchaseDetails.error}')),
         );
+      }
+
+      if (purchaseDetails.pendingCompletePurchase) {
+        await _inAppPurchase.completePurchase(purchaseDetails);
       }
     }
   }
@@ -110,7 +146,9 @@ class _SettingsPageState extends State<SettingsPage> {
     bool available = await _inAppPurchase.isAvailable();
     if (available) {
       _getInAppInstance();
-    } else {}
+    } else {
+      debugPrint('In-app purchases not available');
+    }
   }
 
   void _getInAppInstance() async {
@@ -128,10 +166,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _checkPurchaseHistory() async {
     try {
-      // 구매 이력 확인 시도
+      debugPrint('Verifying purchase status...');
       await _inAppPurchase.restorePurchases();
     } catch (e) {
-      // 오류 발생시 처리
       debugPrint('Purchase history check failed: $e');
     }
   }
@@ -140,8 +177,29 @@ class _SettingsPageState extends State<SettingsPage> {
     AdState().resetIsAds();
   }
 
+  void showOverlay(BuildContext context) {
+    if (_overlayEntry == null) {
+      _overlayEntry = OverlayEntry(
+        builder: (context) => Positioned.fill(
+          child: Container(
+            color: Colors.black.withOpacity(0.5),
+            child: Center(child: BouncingDotsIndicator()),
+          ),
+        ),
+      );
+
+      Overlay.of(context).insert(_overlayEntry!);
+    }
+  }
+
+  void hideOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _subscription.cancel();
     _bannerAd?.dispose();
     super.dispose();
@@ -185,8 +243,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: Column(
                   children: [
                     if (_bannerAd != null)
-                      SizedBox(
-                        height: 60, // 광고의 높이 설정
+                      Container(
+                        width: _bannerAd!.size.width.toDouble(),
+                        height: _bannerAd!.size.height.toDouble(),
+                        margin: EdgeInsets.symmetric(vertical: 10),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey), // 디버깅용 테두리
+                        ),
                         child: AdWidget(ad: _bannerAd!),
                       ),
                     Padding(
@@ -264,8 +327,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                     GestureDetector(
-                      onTap:
-                          adState.isAdsRemoved ? null : _handlePurchaseButton,
+                      onTap: () {
+                        showOverlay(context);
+                        _handlePurchaseButton();
+                      },
                       child: SettingMenu(
                         icon: adState.isAdsRemoved
                             ? Icon(Icons.shopping_cart_rounded)

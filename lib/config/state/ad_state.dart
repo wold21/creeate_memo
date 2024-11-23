@@ -3,31 +3,50 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AdState extends ChangeNotifier {
+  static const String _adsKey = 'ads_removed';
   bool _isAdsRemoved = false;
   bool get isAdsRemoved => _isAdsRemoved;
 
   AdState() {
+    debugPrint('AdState initialized with default: $_isAdsRemoved');
     _loadAdsStatus();
   }
 
   Future<void> _loadAdsStatus() async {
-    final prefs = await SharedPreferences.getInstance();
-    _isAdsRemoved = prefs.getBool('ads_removed') ?? false;
-    notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      _isAdsRemoved = prefs.getBool(_adsKey) ?? false;
+      debugPrint('Loaded ads status: $_isAdsRemoved');
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error loading ads status: $e');
+      _isAdsRemoved = false;
+      notifyListeners();
+    }
   }
 
   Future<void> removeAds() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('ads_removed', true);
-    _isAdsRemoved = true;
-    notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_adsKey, true);
+      _isAdsRemoved = true;
+      debugPrint('Ads removed successfully');
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error removing ads: $e');
+    }
   }
 
   Future<void> resetIsAds() async {
-    print("in");
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('ads_removed', false);
-    print("out");
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_adsKey, false);
+      _isAdsRemoved = false;
+      debugPrint('Ads reset successfully');
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error resetting ads: $e');
+    }
   }
 
   Future<bool> restorePurchases() async {
