@@ -15,26 +15,31 @@ class HistoryCalendar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeColor = Theme.of(context).extension<CustomTheme>()!;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
-      child: HeatMapCalendar(
-        defaultColor: Colors.transparent,
-        flexible: true,
-        datasets: contributionData,
-        showColorTip: false,
-        weekTextColor: Theme.of(context).colorScheme.primary,
-        textColor: Theme.of(context).colorScheme.primary,
-        fontSize: 12,
-        margin: EdgeInsets.all(5),
-        colorsets: {
-          1: themeColor.calenderColor,
-        },
-        onClick: (value) {
-          onClick(value);
-        },
-        onMonthChange: (value) {
-          onMonthChange(value);
-        },
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 600), // Limit maximum width
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
+          child: HeatMapCalendar(
+            defaultColor: Colors.transparent,
+            flexible: true,
+            datasets: contributionData,
+            showColorTip: false,
+            weekTextColor: Theme.of(context).colorScheme.primary,
+            textColor: Theme.of(context).colorScheme.primary,
+            fontSize: 12,
+            margin: EdgeInsets.all(5),
+            colorsets: {
+              1: themeColor.calenderColor,
+            },
+            onClick: (value) {
+              onClick(value);
+            },
+            onMonthChange: (value) {
+              onMonthChange(value);
+            },
+          ),
+        ),
       ),
     );
   }
