@@ -40,6 +40,10 @@ class ScaffoldPageState extends State<ScaffoldPage> {
       GraphPage(),
       SettingsPage()
     ];
+    _initializeAds();
+  }
+
+  void _initializeAds() {
     final adState = Provider.of<AdState>(context, listen: false);
     if (!adState.isAdsRemoved) {
       _createInterstitialAd();
@@ -48,6 +52,7 @@ class ScaffoldPageState extends State<ScaffoldPage> {
 
   @override
   void dispose() {
+    _interstitialAd?.dispose();
     super.dispose();
   }
 
@@ -65,13 +70,12 @@ class ScaffoldPageState extends State<ScaffoldPage> {
   }
 
   void _onAd() async {
-    if (Provider.of<AdState>(context, listen: false).isAdsRemoved) return;
+    final adState = Provider.of<AdState>(context, listen: false);
+    if (adState.isAdsRemoved) return;
 
     bool isAdPossible = await adCounterCheck();
     if (isAdPossible && _interstitialAd != null) {
-      _showInterstitialAd(); // 광고 표시
-    } else {
-      print("Ad is not ready or ad counter does not allow showing an ad.");
+      _showInterstitialAd();
     }
   }
 
@@ -97,8 +101,12 @@ class ScaffoldPageState extends State<ScaffoldPage> {
         _createInterstitialAd();
       },
       onAdFailedToShowFullScreenContent: (ad, error) {
+        debugPrint('Failed to show fullscreen content: $error');
         ad.dispose();
         _createInterstitialAd();
+      },
+      onAdShowedFullScreenContent: (ad) {
+        debugPrint('Ad showed fullscreen content.');
       },
     );
 

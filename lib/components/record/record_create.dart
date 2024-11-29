@@ -15,10 +15,10 @@ class RecordCreate extends StatefulWidget {
   State<RecordCreate> createState() => _RecordCreateState();
 }
 
-class _RecordCreateState extends State<RecordCreate> {
+class _RecordCreateState extends State<RecordCreate> with RestorationMixin {
   InterstitialAd? _interstitialAd;
-  late TextEditingController _titleController;
-  late TextEditingController _descriptionController;
+  late final RestorableTextEditingController _titleController;
+  late final RestorableTextEditingController _descriptionController;
   final ValueNotifier<bool> isButtonEnabled = ValueNotifier(false);
   final _adOnCounter = 3;
 
@@ -29,11 +29,21 @@ class _RecordCreateState extends State<RecordCreate> {
     if (!adState.isAdsRemoved) {
       _createInterstitialAd();
     }
-    _titleController = TextEditingController();
-    _descriptionController = TextEditingController();
-    _descriptionController.addListener(() {
-      isButtonEnabled.value = _descriptionController.text.trim().isNotEmpty;
+    _titleController = RestorableTextEditingController();
+    _descriptionController = RestorableTextEditingController();
+    _descriptionController.value.addListener(() {
+      isButtonEnabled.value =
+          _descriptionController.value.text.trim().isNotEmpty;
     });
+  }
+
+  @override
+  String? get restorationId => 'record_create_bottom_sheet';
+
+  @override
+  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
+    registerForRestoration(_titleController, 'title');
+    registerForRestoration(_descriptionController, 'description');
   }
 
   @override
@@ -129,7 +139,7 @@ class _RecordCreateState extends State<RecordCreate> {
                 children: [
                   Expanded(
                     child: TextField(
-                      controller: _titleController,
+                      controller: _titleController.value,
                       onChanged: (value) {
                         // setState(() {
                         //   _title = value;
@@ -154,8 +164,8 @@ class _RecordCreateState extends State<RecordCreate> {
                   GestureDetector(
                     onTap: () {
                       FocusScope.of(context).unfocus();
-                      _titleController.clear();
-                      _descriptionController.clear();
+                      _titleController.value.text = '';
+                      _descriptionController.value.text = '';
                       Navigator.pop(context);
                       _onAd();
                     },
@@ -177,7 +187,7 @@ class _RecordCreateState extends State<RecordCreate> {
                   child: Column(
                     children: [
                       TextField(
-                        controller: _descriptionController,
+                        controller: _descriptionController.value,
                         style: TextStyle(
                             color: Theme.of(context).colorScheme.primary),
                         decoration: InputDecoration(
@@ -205,19 +215,21 @@ class _RecordCreateState extends State<RecordCreate> {
                   ValueListenableBuilder<bool>(
                     valueListenable: isButtonEnabled,
                     builder: (context, value, child) {
-                      bool currentValue =
-                          _titleController.text.trim().isNotEmpty &&
-                              _descriptionController.text.trim().isNotEmpty;
+                      bool currentValue = _titleController.value.text
+                              .trim()
+                              .isNotEmpty &&
+                          _descriptionController.value.text.trim().isNotEmpty;
                       return GestureDetector(
                         onTap: currentValue
                             ? () {
                                 FocusScope.of(context).unfocus();
                                 widget.onSubmit(RecordInfo.insert(
-                                  title: _titleController.text,
-                                  description: _descriptionController.text,
+                                  title: _titleController.value.text,
+                                  description:
+                                      _descriptionController.value.text,
                                 ));
-                                _titleController.clear();
-                                _descriptionController.clear();
+                                _titleController.value.text = '';
+                                _descriptionController.value.text = '';
                                 Navigator.pop(context);
                                 _onAd();
                               }

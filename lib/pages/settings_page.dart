@@ -28,6 +28,7 @@ class _SettingsPageState extends State<SettingsPage>
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
   late StreamSubscription<List<PurchaseDetails>> _subscription;
   List<ProductDetails>? _products;
+  bool _isPurchaseInProgress = false;
 
   @override
   void initState() {
@@ -39,8 +40,7 @@ class _SettingsPageState extends State<SettingsPage>
     final Stream<List<PurchaseDetails>> purchaseUpdated =
         _inAppPurchase.purchaseStream;
     _subscription = purchaseUpdated.listen(_listenToPurchaseUpdated);
-    _initializeInAppPurchase();
-    _checkPurchaseHistory();
+    _getInAppInstance();
   }
 
   @override
@@ -69,20 +69,37 @@ class _SettingsPageState extends State<SettingsPage>
   }
 
   Future<void> _handlePurchaseButton() async {
+    if (_isPurchaseInProgress) return;
+
     try {
+      setState(() => _isPurchaseInProgress = true);
       showOverlay(context);
+
+      final bool available = await _inAppPurchase.isAvailable();
+      if (!available) {
+        throw Exception('In-app purchases not available');
+      }
+
       if (!Provider.of<AdState>(context, listen: false).isAdsRemoved) {
         if (_products != null && _products!.isNotEmpty) {
-          debugPrint('Product ID: ${_products!.first.id}');
-          debugPrint('Product Price: ${_products!.first.price}');
-
           final PurchaseParam purchaseParam = PurchaseParam(
             productDetails: _products!.first,
           );
 
+          final bool alreadyOwned = await _verifyPreviousPurchase();
+          if (alreadyOwned) {
+            await Provider.of<AdState>(context, listen: false).removeAds();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: Text(
+                      'Product already purchased. Restored successfully.')),
+            );
+            return;
+          }
+
           await _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
         } else {
-          throw Exception('No products available');
+          throw Exception('Product not found');
         }
       } else {
         await _inAppPurchase.restorePurchases();
@@ -90,34 +107,53 @@ class _SettingsPageState extends State<SettingsPage>
     } catch (e) {
       debugPrint('Purchase error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
+        SnackBar(content: Text('An error occurred: $e')),
       );
     } finally {
+      setState(() => _isPurchaseInProgress = false);
       hideOverlay();
+    }
+  }
+
+  Future<bool> _verifyPreviousPurchase() async {
+    try {
+      await _inAppPurchase.restorePurchases();
+
+      // AdState에서 현재 상태 확인
+      final adState = Provider.of<AdState>(context, listen: false);
+      return adState.isAdsRemoved;
+    } catch (e) {
+      debugPrint('Previous purchase verification failed: $e');
+      return false;
     }
   }
 
   Future<void> _listenToPurchaseUpdated(
       List<PurchaseDetails> purchaseDetailsList) async {
     for (final purchaseDetails in purchaseDetailsList) {
-      debugPrint('Purchase status: ${purchaseDetails.status}');
-      debugPrint(
-          'Purchase transactionDate: ${purchaseDetails.transactionDate}');
-
       if (purchaseDetails.status == PurchaseStatus.pending) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Purchase pending...')),
+          SnackBar(content: Text('Purchase in progress...')),
         );
       } else if (purchaseDetails.status == PurchaseStatus.purchased ||
           purchaseDetails.status == PurchaseStatus.restored) {
+        bool valid = await _verifyPurchase(purchaseDetails);
+        if (!valid) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Invalid purchase.')),
+          );
+          return;
+        }
+
         final adState = Provider.of<AdState>(context, listen: false);
         await adState.removeAds();
         setState(() {
           _bannerAd?.dispose();
           _bannerAd = null;
         });
+
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Purchase successful!')),
+          SnackBar(content: Text('Purchase completed!')),
         );
       } else if (purchaseDetails.status == PurchaseStatus.error) {
         final error = purchaseDetails.error;
@@ -142,13 +178,8 @@ class _SettingsPageState extends State<SettingsPage>
     }
   }
 
-  void _initializeInAppPurchase() async {
-    bool available = await _inAppPurchase.isAvailable();
-    if (available) {
-      _getInAppInstance();
-    } else {
-      debugPrint('In-app purchases not available');
-    }
+  Future<bool> _verifyPurchase(PurchaseDetails purchaseDetails) async {
+    return purchaseDetails.verificationData.serverVerificationData.isNotEmpty;
   }
 
   void _getInAppInstance() async {
@@ -168,6 +199,19 @@ class _SettingsPageState extends State<SettingsPage>
     try {
       debugPrint('Verifying purchase status...');
       await _inAppPurchase.restorePurchases();
+
+      // 구매 상태 확인 및 UI 업데이트
+      final adState = Provider.of<AdState>(context, listen: false);
+      if (adState.isAdsRemoved && _bannerAd != null) {
+        setState(() {
+          _bannerAd?.dispose();
+          _bannerAd = null;
+        });
+      } else if (!adState.isAdsRemoved && _bannerAd == null) {
+        setState(() {
+          _createBannerAd();
+        });
+      }
     } catch (e) {
       debugPrint('Purchase history check failed: $e');
     }

@@ -11,14 +11,17 @@ class ReportFeedbackPage extends StatefulWidget {
 }
 
 class _ReportFeedbackPageState extends State<ReportFeedbackPage> {
-  Future<void>? _launched;
-  final Uri formUrl = Uri.parse('https://forms.gle/tHk59ggPJH1Dmikk7');
-  Future<void> _launchInAppWithBrowserOptions() async {
-    if (!await launchUrl(
-      formUrl,
-      mode: LaunchMode.externalApplication,
-    )) {
-      throw Exception('Could not launch $formUrl');
+  Future<void> _sendEmail() async {
+    final Uri emailLaunchUri =
+        Uri(scheme: 'mailto', path: 'seohae9513@gmail.com', queryParameters: {
+      'subject': '[NoteByDay] Bug Report & Feedback',
+      'body': 'App Version: 1.0.0\n\nDetails:\n',
+    });
+
+    if (!await launchUrl(emailLaunchUri)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Could not launch email client')),
+      );
     }
   }
 
@@ -44,19 +47,17 @@ class _ReportFeedbackPageState extends State<ReportFeedbackPage> {
             children: [
               TextWidget(
                   text:
-                      'If you find a feature or bug that you think we should improve, please fill out the form below and we\'ll update it as soon as possible.',
+                      'If you find a feature or bug that you think we should improve, please send us an email and we\'ll update it as soon as possible.',
                   fontSize: 14),
               TextWidget(text: 'Thank you for your efforts.', fontSize: 14),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                 child: ElevatedButton(
-                  onPressed: () => setState(() {
-                    _launched = _launchInAppWithBrowserOptions();
-                  }),
+                  onPressed: _sendEmail,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: themeColor.calenderColor,
                   ),
-                  child: TextWidget(text: 'Move to Form.', fontSize: 14),
+                  child: TextWidget(text: 'Send Email', fontSize: 14),
                 ),
               ),
             ],
@@ -64,12 +65,3 @@ class _ReportFeedbackPageState extends State<ReportFeedbackPage> {
         ));
   }
 }
-
-// Center(
-//           child: ElevatedButton(
-//             onPressed: () => setState(() {
-//               _launched = _launchInAppWithBrowserOptions();
-//             }),
-//             child: const Text('Launch in app with title displayed'),
-//           ),
-//         ));

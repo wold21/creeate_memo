@@ -17,14 +17,14 @@ class RecordDetail extends StatefulWidget {
   State<RecordDetail> createState() => _RecordDetailState();
 }
 
-class _RecordDetailState extends State<RecordDetail> {
+class _RecordDetailState extends State<RecordDetail> with RestorationMixin {
   InterstitialAd? _interstitialAd;
-  late TextEditingController _titleController;
-  late TextEditingController _descriptionController;
+  late final RestorableTextEditingController _titleController;
+  late final RestorableTextEditingController _descriptionController;
   final _adOnCounter = 3;
 
-  late String _title;
-  late String _description;
+  final RestorableString _title = RestorableString('');
+  final RestorableString _description = RestorableString('');
 
   @override
   void initState() {
@@ -33,17 +33,31 @@ class _RecordDetailState extends State<RecordDetail> {
     if (!adState.isAdsRemoved) {
       _createInterstitialAd();
     }
-    _titleController = TextEditingController(text: widget.record.title);
+    _titleController =
+        RestorableTextEditingController(text: widget.record.title);
     _descriptionController =
-        TextEditingController(text: widget.record.description);
-    _title = widget.record.title;
-    _description = widget.record.description;
+        RestorableTextEditingController(text: widget.record.description);
+    _title.value = widget.record.title;
+    _description.value = widget.record.description;
+  }
+
+  @override
+  String? get restorationId => 'record_detail_bottom_sheet';
+
+  @override
+  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
+    registerForRestoration(_titleController, 'title_controller');
+    registerForRestoration(_descriptionController, 'description_controller');
+    registerForRestoration(_title, 'title');
+    registerForRestoration(_description, 'description');
   }
 
   @override
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
+    _title.dispose();
+    _description.dispose();
     super.dispose();
   }
 
@@ -71,8 +85,8 @@ class _RecordDetailState extends State<RecordDetail> {
   void _saveRecord() {
     final record = RecordInfo.update(
       id: widget.record.id,
-      title: _title,
-      description: _description,
+      title: _title.value,
+      description: _description.value,
       createAt: widget.record.createAt,
       isFavorite: widget.record.isFavorite,
     );
@@ -131,8 +145,8 @@ class _RecordDetailState extends State<RecordDetail> {
   }
 
   bool get _isFormValid {
-    return _titleController.text.trim().isNotEmpty &&
-        _descriptionController.text.trim().isNotEmpty;
+    return _titleController.value.text.trim().isNotEmpty &&
+        _descriptionController.value.text.trim().isNotEmpty;
   }
 
   @override
@@ -202,10 +216,10 @@ class _RecordDetailState extends State<RecordDetail> {
                     children: [
                       Expanded(
                         child: TextField(
-                          controller: _titleController,
+                          controller: _titleController.value,
                           onChanged: (value) {
                             setState(() {
-                              _title = value;
+                              _title.value = value;
                             });
                           },
                           decoration: InputDecoration(
@@ -226,10 +240,10 @@ class _RecordDetailState extends State<RecordDetail> {
                   ),
                   Expanded(
                     child: TextField(
-                      controller: _descriptionController,
+                      controller: _descriptionController.value,
                       onChanged: (value) {
                         setState(() {
-                          _description = value;
+                          _description.value = value;
                         });
                       },
                       decoration: InputDecoration(

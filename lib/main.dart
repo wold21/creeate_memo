@@ -8,6 +8,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,6 +18,16 @@ void main() async {
 
   // Crashlytics 설정
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+
+  // 플랫폼 에러도 Crashlytics에 기록
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
+
+  // 디버그 모드에서 Crashlytics 수집 비활성화 (선택사항)
+  await FirebaseCrashlytics.instance
+      .setCrashlyticsCollectionEnabled(!kDebugMode);
 
   MobileAds.instance.initialize();
 
@@ -45,6 +56,7 @@ class _CreateAnAuthorState extends State<CreateAnAuthor> {
       return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: themeState.currentTheme,
+        restorationScopeId: 'app',
         home: ScaffoldPage(),
       );
     });

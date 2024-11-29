@@ -6,14 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="8e2d6505-9d9b-4d63-a282-df204af27679" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/components/record/record_create.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/components/record/record_create.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/config/color/custom_theme.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/config/color/custom_theme.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/config/state/theme_state.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/config/state/theme_state.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/databases/record/record_helper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/databases/record/record_helper.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/pages/home_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/pages/home_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/pages/trash_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/pages/trash_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,34 +30,34 @@
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "dart.analysis.tool.window.visible": "false",
-    "io.flutter.reload.alreadyRun": "true",
-    "last_opened_file_path": "/Users/hyuk/Workspace/flutter/create_author",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "show.migrate.to.gradle.popup": "false",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/hyuk/Workspace/flutter/create_author&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "com.android.tools.idea.sqlite.queryhistory": [
-      "select * from records where isDelete = 0 limit 50 offset 0;",
-      "select * from records where isDelete = 0 limit 50 offset 1;",
-      "select * from records where isDelete = 0 limit 50 offset 2;",
-      "select * from records where isDelete = 0 limit 50 offset 4;",
-      "select * from records where isDelete = 0 limit 50 offset 3;"
+  &quot;keyToStringList&quot;: {
+    &quot;com.android.tools.idea.sqlite.queryhistory&quot;: [
+      &quot;select * from records where isDelete = 0 limit 50 offset 0;&quot;,
+      &quot;select * from records where isDelete = 0 limit 50 offset 1;&quot;,
+      &quot;select * from records where isDelete = 0 limit 50 offset 2;&quot;,
+      &quot;select * from records where isDelete = 0 limit 50 offset 4;&quot;,
+      &quot;select * from records where isDelete = 0 limit 50 offset 3;&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -77,6 +69,8 @@
       <workItem from="1729942473335" duration="498000" />
       <workItem from="1729942987701" duration="639000" />
       <workItem from="1730455434761" duration="1589000" />
+      <workItem from="1732446185966" duration="465000" />
+      <workItem from="1732521798913" duration="604000" />
     </task>
     <servers />
   </component>
