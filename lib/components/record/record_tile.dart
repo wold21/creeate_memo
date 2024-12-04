@@ -6,15 +6,16 @@ import 'package:create_author/utils/date.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class RecordTile extends StatefulWidget {
+class RecordTile extends StatelessWidget {
   final RecordInfo records;
-  const RecordTile({super.key, required this.records});
+  final VoidCallback? onDeleted;
 
-  @override
-  State<RecordTile> createState() => _RecordTileState();
-}
+  const RecordTile({
+    super.key,
+    required this.records,
+    this.onDeleted,
+  });
 
-class _RecordTileState extends State<RecordTile> {
   void _showBottomSheet(BuildContext context) {
     final themeColor = Theme.of(context).extension<CustomTheme>()!;
     showModalBottomSheet(
@@ -73,9 +74,7 @@ class _RecordTileState extends State<RecordTile> {
                           iconColor: Theme.of(context).colorScheme.error,
                           onTap: () async {
                             Navigator.pop(context);
-                            await Provider.of<RecordHelper>(context,
-                                    listen: false)
-                                .deleteRecord(widget.records.id);
+                            _deleteRecord(context);
                           },
                         ),
                       ],
@@ -88,6 +87,14 @@ class _RecordTileState extends State<RecordTile> {
         );
       },
     );
+  }
+
+  void _deleteRecord(BuildContext context) {
+    Provider.of<RecordHelper>(context, listen: false)
+        .deleteRecord(records.id)
+        .then((_) {
+      onDeleted?.call();
+    });
   }
 
   @override
@@ -118,7 +125,7 @@ class _RecordTileState extends State<RecordTile> {
                       child: Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: Text(
-                          widget.records.title,
+                          records.title,
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.primary,
                               fontSize: 15,
@@ -131,7 +138,7 @@ class _RecordTileState extends State<RecordTile> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          getDate(widget.records.createAt),
+                          getDate(records.createAt),
                           style: TextStyle(
                               color: themeColor.colorSubGrey,
                               fontSize: 11,
@@ -141,14 +148,14 @@ class _RecordTileState extends State<RecordTile> {
                         GestureDetector(
                           onTap: () {
                             Provider.of<RecordHelper>(context, listen: false)
-                                .toggleFavorite(widget.records.id);
+                                .toggleFavorite(records.id);
                           },
                           child: Icon(
-                              widget.records.isFavorite == 1
+                              records.isFavorite == 1
                                   ? Icons.star_outlined
                                   : Icons.star_outline_outlined,
                               size: 22,
-                              color: widget.records.isFavorite == 1
+                              color: records.isFavorite == 1
                                   ? Theme.of(context).colorScheme.primary
                                   : themeColor.colorSubGrey),
                         ),
@@ -175,7 +182,7 @@ class _RecordTileState extends State<RecordTile> {
                   children: [
                     Expanded(
                       child: Text(
-                        widget.records.description,
+                        records.description,
                         style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.w300),
@@ -191,10 +198,10 @@ class _RecordTileState extends State<RecordTile> {
               //   child: GestureDetector(
               //     onTap: () {
               //       Provider.of<RecordHelper>(context, listen: false)
-              //           .toggleFavorite(widget.records.id);
+              //           .toggleFavorite(records.id);
               //     },
               //     child: Icon(
-              //         widget.records.isFavorite == 1
+              //         records.isFavorite == 1
               //             ? Icons.star_outlined
               //             : Icons.star_outline_outlined,
               //         size: 22,

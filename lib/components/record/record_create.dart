@@ -15,10 +15,10 @@ class RecordCreate extends StatefulWidget {
   State<RecordCreate> createState() => _RecordCreateState();
 }
 
-class _RecordCreateState extends State<RecordCreate> with RestorationMixin {
+class _RecordCreateState extends State<RecordCreate> {
   InterstitialAd? _interstitialAd;
-  late final RestorableTextEditingController _titleController;
-  late final RestorableTextEditingController _descriptionController;
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
   final ValueNotifier<bool> isButtonEnabled = ValueNotifier(false);
   final _adOnCounter = 3;
 
@@ -29,21 +29,9 @@ class _RecordCreateState extends State<RecordCreate> with RestorationMixin {
     if (!adState.isAdsRemoved) {
       _createInterstitialAd();
     }
-    _titleController = RestorableTextEditingController();
-    _descriptionController = RestorableTextEditingController();
-    _descriptionController.value.addListener(() {
-      isButtonEnabled.value =
-          _descriptionController.value.text.trim().isNotEmpty;
+    _descriptionController.addListener(() {
+      isButtonEnabled.value = _descriptionController.text.trim().isNotEmpty;
     });
-  }
-
-  @override
-  String? get restorationId => 'record_create_bottom_sheet';
-
-  @override
-  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
-    registerForRestoration(_titleController, 'title');
-    registerForRestoration(_descriptionController, 'description');
   }
 
   @override
@@ -51,6 +39,7 @@ class _RecordCreateState extends State<RecordCreate> with RestorationMixin {
     _titleController.dispose();
     _descriptionController.dispose();
     isButtonEnabled.dispose();
+    _interstitialAd?.dispose();
     super.dispose();
   }
 
@@ -139,7 +128,7 @@ class _RecordCreateState extends State<RecordCreate> with RestorationMixin {
                 children: [
                   Expanded(
                     child: TextField(
-                      controller: _titleController.value,
+                      controller: _titleController,
                       onChanged: (value) {
                         // setState(() {
                         //   _title = value;
@@ -160,12 +149,12 @@ class _RecordCreateState extends State<RecordCreate> with RestorationMixin {
                       autofocus: true,
                     ),
                   ),
-                  Spacer(),
+                  const SizedBox(width: 10),
                   GestureDetector(
                     onTap: () {
                       FocusScope.of(context).unfocus();
-                      _titleController.value.text = '';
-                      _descriptionController.value.text = '';
+                      _titleController.text = '';
+                      _descriptionController.text = '';
                       Navigator.pop(context);
                       _onAd();
                     },
@@ -187,7 +176,7 @@ class _RecordCreateState extends State<RecordCreate> with RestorationMixin {
                   child: Column(
                     children: [
                       TextField(
-                        controller: _descriptionController.value,
+                        controller: _descriptionController,
                         style: TextStyle(
                             color: Theme.of(context).colorScheme.primary),
                         decoration: InputDecoration(
@@ -215,21 +204,19 @@ class _RecordCreateState extends State<RecordCreate> with RestorationMixin {
                   ValueListenableBuilder<bool>(
                     valueListenable: isButtonEnabled,
                     builder: (context, value, child) {
-                      bool currentValue = _titleController.value.text
-                              .trim()
-                              .isNotEmpty &&
-                          _descriptionController.value.text.trim().isNotEmpty;
+                      bool currentValue =
+                          _titleController.text.trim().isNotEmpty &&
+                              _descriptionController.text.trim().isNotEmpty;
                       return GestureDetector(
                         onTap: currentValue
                             ? () {
                                 FocusScope.of(context).unfocus();
                                 widget.onSubmit(RecordInfo.insert(
-                                  title: _titleController.value.text,
-                                  description:
-                                      _descriptionController.value.text,
+                                  title: _titleController.text,
+                                  description: _descriptionController.text,
                                 ));
-                                _titleController.value.text = '';
-                                _descriptionController.value.text = '';
+                                _titleController.text = '';
+                                _descriptionController.text = '';
                                 Navigator.pop(context);
                                 _onAd();
                               }

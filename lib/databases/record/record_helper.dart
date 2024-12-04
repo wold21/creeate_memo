@@ -13,7 +13,7 @@ class RecordHelper extends ChangeNotifier {
   int _recordPage = 1;
   int _searchPage = 1;
   // int _favoritePage = 1;
-  final int limit = 50;
+  final int limit = 100;
 
   List<RecordInfo> _allRecords = [];
   List<RecordInfo> _favoriteRecords = [];

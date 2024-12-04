@@ -18,6 +18,7 @@ class GraphPage extends StatefulWidget {
 class _GraphPageState extends State<GraphPage> {
   late ScrollNotifier? _scrollNotifier;
   Map<DateTime, int> contributionData = {};
+  final Set<String> _dismissedItems = {};
 
   @override
   void initState() {
@@ -97,8 +98,8 @@ class _GraphPageState extends State<GraphPage> {
                 return true;
               },
               child: Consumer<RecordHelper>(
-                builder: (context, value, child) {
-                  final records = value.historyRecords;
+                builder: (context, recordHelper, child) {
+                  final records = recordHelper.historyRecords;
                   if (records.isEmpty) {
                     return Center(
                       child: Text(
@@ -109,23 +110,84 @@ class _GraphPageState extends State<GraphPage> {
                     );
                   } else {
                     return ListView.builder(
-                        controller: _scrollNotifier?.scrollController,
-                        // shrinkWrap: true,
-                        physics: AlwaysScrollableScrollPhysics(),
-                        itemCount: records.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        RecordDetail(record: records[index]),
-                                  ),
-                                );
-                              },
-                              child: RecordTileMini(record: records[index]));
-                        });
+                      controller: _scrollNotifier?.scrollController,
+                      physics: AlwaysScrollableScrollPhysics(),
+                      itemCount: records.length,
+                      itemBuilder: (context, index) {
+                        final record = records[index];
+
+                        if (_dismissedItems.contains(record.id.toString())) {
+                          return Container();
+                        }
+
+                        return Dismissible(
+                          key: ValueKey(record.id),
+                          direction: DismissDirection.endToStart,
+                          dismissThresholds: const {
+                            DismissDirection.endToStart: 0.4,
+                          },
+                          background: Container(
+                            color: Colors.red[300],
+                            alignment: Alignment.centerRight,
+                            padding: EdgeInsets.only(right: 20),
+                            child: Icon(Icons.delete,
+                                color: Theme.of(context).colorScheme.primary),
+                          ),
+                          confirmDismiss: (direction) async {
+                            return await showDialog<bool>(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Delete Record'),
+                                      content: Text(
+                                          'Are you sure you want to delete this record?'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(false),
+                                          child: Text('Cancel'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(true),
+                                          child: Text('Delete'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ) ??
+                                false;
+                          },
+                          onDismissed: (direction) {
+                            final targetDate = record.createAt;
+
+                            setState(() {
+                              _dismissedItems.add(record.id.toString());
+                            });
+
+                            Provider.of<RecordHelper>(context, listen: false)
+                                .deleteRecord(record.id)
+                                .then((_) {
+                              Provider.of<RecordHelper>(context, listen: false)
+                                  .getRecordsByDate(DateTime.parse(targetDate));
+                              getContributions();
+                            });
+                          },
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      RecordDetail(record: record),
+                                ),
+                              );
+                            },
+                            child: RecordTileMini(record: record),
+                          ),
+                        );
+                      },
+                    );
                   }
                 },
               ),

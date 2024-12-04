@@ -56,7 +56,8 @@ class AdService {
     }
   }
 
-  static void disposeAd(BannerAd? bannerAd) {
+  static void disposeAd(InterstitialAd? interstitialAd, BannerAd? bannerAd) {
+    interstitialAd?.dispose();
     bannerAd?.dispose();
   }
 }

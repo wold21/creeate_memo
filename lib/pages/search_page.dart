@@ -65,6 +65,11 @@ class _SearchPageState extends State<SearchPage> {
         .updateScrollDirection(scrollController.position.userScrollDirection);
   }
 
+  void _refreshSearch() {
+    Provider.of<RecordHelper>(context, listen: false)
+        .getSearchRecords(_searchController.text, refresh: true);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -216,10 +221,16 @@ class _SearchPageState extends State<SearchPage> {
                                                   RecordDetail(
                                                       record: records[index]),
                                             ),
-                                          );
+                                          ).then((_) {
+                                            _refreshSearch();
+                                          });
                                         },
                                         child: RecordTile(
-                                            records: records[index]));
+                                            records: records[index],
+                                            onDeleted: () {
+                                              print("deleted!");
+                                              _refreshSearch();
+                                            }));
                                   });
                             }
                           },

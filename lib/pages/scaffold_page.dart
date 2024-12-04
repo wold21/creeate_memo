@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:create_author/components/nav/custom_bottom_nav_bar.dart';
 import 'package:create_author/components/record/record_create.dart';
 import 'package:create_author/config/%08scroll_notifier.dart';
@@ -28,7 +29,7 @@ class ScaffoldPageState extends State<ScaffoldPage> {
   InterstitialAd? _interstitialAd;
   late final List _pages;
   int _pageIndex = 0;
-  final _adOnCounter = 5;
+  final _adOnCounter = 6;
 
   @override
   void initState() {
@@ -159,6 +160,7 @@ class ScaffoldPageState extends State<ScaffoldPage> {
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         backgroundColor: themeColor.borderColor,
+        extendBody: true,
         body: Stack(
           children: [
             _pages[_pageIndex],
@@ -172,8 +174,8 @@ class ScaffoldPageState extends State<ScaffoldPage> {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Colors.black.withOpacity(0.4), // 위쪽
-                        Colors.black.withOpacity(0.0), // 아래쪽
+                        Colors.black.withOpacity(0.4),
+                        Colors.black.withOpacity(0.0),
                       ],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
@@ -182,27 +184,48 @@ class ScaffoldPageState extends State<ScaffoldPage> {
                 ),
               ),
             ),
-            Consumer<ScrollNotifier>(
-              builder: (context, scrollNotifier, child) {
-                return AnimatedContainer(
-                  duration: Duration(milliseconds: 200),
-                  transform: Matrix4.translationValues(
-                      0, scrollNotifier.bottomNavPosition, 0),
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Theme(
-                      data: Theme.of(context).copyWith(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
+          ],
+        ),
+        bottomNavigationBar: Consumer<ScrollNotifier>(
+          builder: (context, scrollNotifier, child) {
+            return AnimatedContainer(
+              duration: Duration(milliseconds: 200),
+              transform: Matrix4.translationValues(
+                  0, scrollNotifier.bottomNavPosition, 0),
+              child: Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                    child: Container(
+                      height: kBottomNavigationBarHeight,
+                      decoration: BoxDecoration(
+                        color: themeColor.borderColor.withOpacity(0.7),
                       ),
-                      child: CustomBottomNavBar(
-                          currentIndex: _pageIndex, onTap: _onItemTapped),
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                        ),
+                        child: CustomBottomNavBar(
+                          currentIndex: _pageIndex,
+                          onTap: _onItemTapped,
+                        ),
+                      ),
                     ),
                   ),
-                );
-              },
-            ),
-          ],
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

@@ -16,7 +16,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  OverlayEntry? _overlayEntry;
   late ScrollNotifier? _scrollNotifier;
 
   @override
@@ -45,26 +44,6 @@ class _HomePageState extends State<HomePage> {
         .updateScrollDirection(scrollController.position.userScrollDirection);
   }
 
-  void showOverlay(BuildContext context) {
-    if (_overlayEntry == null) {
-      _overlayEntry = OverlayEntry(
-        builder: (context) => Positioned.fill(
-          child: Container(
-            color: Colors.black.withOpacity(0.5),
-            child: Center(child: BouncingDotsIndicator()),
-          ),
-        ),
-      );
-
-      Overlay.of(context).insert(_overlayEntry!);
-    }
-  }
-
-  void hideOverlay() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-  }
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -77,115 +56,120 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     _scrollNotifier?.scrollController.removeListener(_scrollListener);
 
-    hideOverlay();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final themeColor = Theme.of(context).extension<CustomTheme>()!;
-    return SingleChildScrollView(
-        controller: _scrollNotifier?.scrollController,
-        child: Column(
-          children: [
-            SafeArea(
-              child: Column(
+    return SafeArea(
+      bottom: false,
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(top: 20, left: 25, right: 25, bottom: 5),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Records',
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              final scaffoldPageState =
+                  context.findAncestorStateOfType<ScaffoldPageState>();
+              scaffoldPageState?.showInputSheet();
+            },
+            child: Padding(
+              padding:
+                  EdgeInsets.only(top: 10, left: 25, right: 25, bottom: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: 20, left: 25, right: 25, bottom: 5),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Records',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600),
-                      ),
+                  Expanded(
+                    child: Text(
+                      'What\'s new',
+                      style: TextStyle(
+                          color: themeColor.colorDeepGrey, fontSize: 20),
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      final scaffoldPageState =
-                          context.findAncestorStateOfType<ScaffoldPageState>();
-                      scaffoldPageState?.showInputSheet();
-                    },
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 5.0, horizontal: 25.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'What\'s new',
-                              style: TextStyle(
-                                  color: themeColor.colorDeepGrey,
-                                  fontSize: 20),
-                            ),
-                          ),
-                          Icon(
-                            Icons.add_circle_outline_rounded,
-                            size: 30,
-                            color: themeColor.colorDeepGrey,
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  Consumer<RecordHelper>(
-                    builder: (context, recordHelper, child) {
-                      final records = recordHelper.allRecords;
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        if (recordHelper.isLoading) {
-                          showOverlay(context);
-                        } else {
-                          hideOverlay();
-                        }
-                      });
-                      if (records.isEmpty) {
-                        return Column(
-                          children: [
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.4,
-                            ),
-                            Center(
-                              child: Text('Start your first record.',
-                                  style: TextStyle(
-                                      color: themeColor.colorSubGrey,
-                                      fontSize: 15)),
-                            ),
-                          ],
-                        );
-                      } else {
-                        return ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: records.length,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        RecordDetail(record: records[index]),
-                                  ),
-                                );
-                              },
-                              child: RecordTile(records: records[index]),
-                            );
-                          },
-                        );
-                      }
-                    },
+                  Icon(
+                    Icons.add_circle_outline_rounded,
+                    size: 30,
+                    color: themeColor.colorDeepGrey,
                   )
                 ],
               ),
             ),
-          ],
-        ));
+          ),
+          Expanded(
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (ScrollNotification notification) {
+                if (notification is OverscrollNotification) {
+                  final double overscroll = notification.overscroll;
+                  if (overscroll > 0) {
+                    _scrollNotifier?.updateBottomNavPosition(100.0);
+                  } else if (overscroll < 0) {
+                    _scrollNotifier?.updateBottomNavPosition(0.0);
+                  }
+                }
+                return true;
+              },
+              child: Consumer<RecordHelper>(
+                builder: (context, recordHelper, child) {
+                  final records = recordHelper.allRecords;
+
+                  if (records.isEmpty && !recordHelper.isLoading) {
+                    return Center(
+                      child: Text('Start your first record.',
+                          style: TextStyle(
+                              color: themeColor.colorSubGrey, fontSize: 15)),
+                    );
+                  }
+
+                  return ListView.builder(
+                    controller: _scrollNotifier?.scrollController,
+                    physics: AlwaysScrollableScrollPhysics(),
+                    padding:
+                        EdgeInsets.only(bottom: kBottomNavigationBarHeight),
+                    itemCount:
+                        records.length + (recordHelper.isLoading ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index == records.length) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20.0),
+                          child: Center(
+                            child: BouncingDotsIndicator(),
+                          ),
+                        );
+                      }
+
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  RecordDetail(record: records[index]),
+                            ),
+                          );
+                        },
+                        child: RecordTile(records: records[index]),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

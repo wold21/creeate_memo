@@ -17,14 +17,14 @@ class RecordDetail extends StatefulWidget {
   State<RecordDetail> createState() => _RecordDetailState();
 }
 
-class _RecordDetailState extends State<RecordDetail> with RestorationMixin {
+class _RecordDetailState extends State<RecordDetail> {
   InterstitialAd? _interstitialAd;
-  late final RestorableTextEditingController _titleController;
-  late final RestorableTextEditingController _descriptionController;
+  late final TextEditingController _titleController;
+  late final TextEditingController _descriptionController;
   final _adOnCounter = 3;
 
-  final RestorableString _title = RestorableString('');
-  final RestorableString _description = RestorableString('');
+  String _title = '';
+  String _description = '';
 
   @override
   void initState() {
@@ -33,31 +33,18 @@ class _RecordDetailState extends State<RecordDetail> with RestorationMixin {
     if (!adState.isAdsRemoved) {
       _createInterstitialAd();
     }
-    _titleController =
-        RestorableTextEditingController(text: widget.record.title);
+    _titleController = TextEditingController(text: widget.record.title);
     _descriptionController =
-        RestorableTextEditingController(text: widget.record.description);
-    _title.value = widget.record.title;
-    _description.value = widget.record.description;
-  }
-
-  @override
-  String? get restorationId => 'record_detail_bottom_sheet';
-
-  @override
-  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
-    registerForRestoration(_titleController, 'title_controller');
-    registerForRestoration(_descriptionController, 'description_controller');
-    registerForRestoration(_title, 'title');
-    registerForRestoration(_description, 'description');
+        TextEditingController(text: widget.record.description);
+    _title = widget.record.title;
+    _description = widget.record.description;
   }
 
   @override
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
-    _title.dispose();
-    _description.dispose();
+    _interstitialAd?.dispose();
     super.dispose();
   }
 
@@ -85,8 +72,8 @@ class _RecordDetailState extends State<RecordDetail> with RestorationMixin {
   void _saveRecord() {
     final record = RecordInfo.update(
       id: widget.record.id,
-      title: _title.value,
-      description: _description.value,
+      title: _title,
+      description: _description,
       createAt: widget.record.createAt,
       isFavorite: widget.record.isFavorite,
     );
@@ -145,8 +132,8 @@ class _RecordDetailState extends State<RecordDetail> with RestorationMixin {
   }
 
   bool get _isFormValid {
-    return _titleController.value.text.trim().isNotEmpty &&
-        _descriptionController.value.text.trim().isNotEmpty;
+    return _titleController.text.trim().isNotEmpty &&
+        _descriptionController.text.trim().isNotEmpty;
   }
 
   @override
@@ -216,10 +203,10 @@ class _RecordDetailState extends State<RecordDetail> with RestorationMixin {
                     children: [
                       Expanded(
                         child: TextField(
-                          controller: _titleController.value,
+                          controller: _titleController,
                           onChanged: (value) {
                             setState(() {
-                              _title.value = value;
+                              _title = value;
                             });
                           },
                           decoration: InputDecoration(
@@ -240,10 +227,10 @@ class _RecordDetailState extends State<RecordDetail> with RestorationMixin {
                   ),
                   Expanded(
                     child: TextField(
-                      controller: _descriptionController.value,
+                      controller: _descriptionController,
                       onChanged: (value) {
                         setState(() {
-                          _description.value = value;
+                          _description = value;
                         });
                       },
                       decoration: InputDecoration(
