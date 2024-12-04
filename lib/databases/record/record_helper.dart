@@ -187,6 +187,7 @@ class RecordHelper extends ChangeNotifier {
 
     final newRecord = await getRecordById(int);
 
+    await getRecordsByDate(DateTime.now());
     await callUpdate();
     await ContributionHelper()
         .addOrUpdateContribution(DateTime.parse(record.createAt), 'create');
