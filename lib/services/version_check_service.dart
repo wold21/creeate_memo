@@ -10,8 +10,8 @@ class VersionCheckService {
 
   Future<void> initialize() async {
     await remoteConfig.setConfigSettings(RemoteConfigSettings(
-      fetchTimeout: const Duration(minutes: 0),
-      minimumFetchInterval: const Duration(hours: 0),
+      fetchTimeout: const Duration(minutes: 1),
+      minimumFetchInterval: const Duration(hours: 1),
     ));
 
     await remoteConfig.setDefaults(const {
