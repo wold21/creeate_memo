@@ -12,6 +12,7 @@ import 'package:create_author/pages/home_page.dart';
 import 'package:create_author/pages/search_page.dart';
 import 'package:create_author/pages/settings_page.dart';
 import 'package:create_author/service/ad_service.dart';
+import 'package:create_author/services/version_check_service.dart';
 import 'package:create_author/utils/vibrator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -26,6 +27,7 @@ class ScaffoldPage extends StatefulWidget {
 }
 
 class ScaffoldPageState extends State<ScaffoldPage> {
+  final _versionCheckService = VersionCheckService();
   InterstitialAd? _interstitialAd;
   late final List _pages;
   int _pageIndex = 0;
@@ -42,6 +44,14 @@ class ScaffoldPageState extends State<ScaffoldPage> {
       SettingsPage()
     ];
     _initializeAds();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeApp();
+    });
+  }
+
+  Future<void> _initializeApp() async {
+    await _versionCheckService.initialize();
+    await _versionCheckService.checkForUpdate(context);
   }
 
   void _initializeAds() {

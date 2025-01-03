@@ -42,14 +42,9 @@ void main() async {
   ], child: CreateAnAuthor()));
 }
 
-class CreateAnAuthor extends StatefulWidget {
+class CreateAnAuthor extends StatelessWidget {
   const CreateAnAuthor({super.key});
 
-  @override
-  State<CreateAnAuthor> createState() => _CreateAnAuthorState();
-}
-
-class _CreateAnAuthorState extends State<CreateAnAuthor> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeState>(builder: (context, themeState, child) {
